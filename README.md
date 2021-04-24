@@ -6,7 +6,11 @@ Az ábrán látható módon rendezzünk el 5 kék és 5 piros korongok egy 5x5 m
 
 ## Fejlesztési napló
 
-| Dátum        | Mit?              |
-| ------------ | ----------------- |
-| 2021. 04. 24 | Initial commit    |
-|              | Maven files added |
+| Dátum        | Mit?                       |
+| ------------ | -------------------------- |
+| 2021. 04. 24 | Initial commit             |
+|              | Maven files added          |
+|              | Default App* files deleted |
+|              | state package created      |
+|              | Directions.java Enum added |
+|              | Position.java Class added  |
