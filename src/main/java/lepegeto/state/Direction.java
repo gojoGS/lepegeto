@@ -26,7 +26,7 @@ public enum Direction {
     }
 
     public static Direction of(int rowChange, int colChange) {
-        for(Direction direction: values()) {
+        for(var direction: values()) {
             if(direction.rowChange == rowChange && direction.colChange == colChange) {
                 return direction;
             }
