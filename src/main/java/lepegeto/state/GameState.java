@@ -80,7 +80,7 @@ public class GameState {
         return false;
     }
 
-    private boolean isOcuppied(Position position) {
+    private boolean isOccupied(Position position) {
         for(var pos: redPositions) {
             if(position.equals(pos)) {
                 return true;
@@ -97,7 +97,7 @@ public class GameState {
     }
 
     public boolean isValid(Position position) {
-        return !isForbidden(position) && !isOcuppied(position) && isOnBoard(position);
+        return !isForbidden(position) && !isOccupied(position) && isOnBoard(position);
     }
 
 
