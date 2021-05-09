@@ -5,7 +5,7 @@ public enum Player {
     RED;
 
     public static Player other(Player player) {
-        if(player == RED) {
+        if(player.equals(RED)) {
             return BLUE;
         } else {
             return RED;
