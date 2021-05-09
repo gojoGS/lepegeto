@@ -9,21 +9,39 @@ import java.util.StringJoiner;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GameState implements Cloneable {
 
+    /**
+     * The size of the board
+     */
     private static final int BOARD_SIZE = 5;
+    /**
+     * The current player
+     */
     private Player currentPlayer;
 
+    /**
+     * The positions of the Red player
+     */
     @XmlElementWrapper(name = "redPositions")
     @XmlElement(name = "position")
     private Position[] redPositions;
 
+    /**
+     * The positions of the Blue player
+     */
     @XmlElementWrapper(name = "bluePositions")
     @XmlElement(name = "position")
     private Position[] bluePositions;
 
+    /**
+     * The position of block, inaccessible to both sides.
+     */
     @XmlElementWrapper(name = "forbiddenPositions")
     @XmlElement(name = "position")
     private Position[] forbiddenPositions;
 
+    /**
+     * Creates a {@code GameState} object that corresponds to the initial state of the game.
+     */
     GameState() {
         redPositions = new Position[BOARD_SIZE];
         bluePositions = new Position[BOARD_SIZE];
@@ -48,6 +66,9 @@ public class GameState implements Cloneable {
         return copy;
     }
 
+    /**
+     * Sets the current player to the not current one.
+     */
     public void nextPlayer() {
         currentPlayer = Player.other(currentPlayer);
     }
@@ -60,6 +81,9 @@ public class GameState implements Cloneable {
         }
     }
 
+    /**
+     * {@return whether the current player is the winner, based on the positions of his figures}
+     */
     public boolean isCurrentPlayerWinner() {
         int destinationRowNumber = -1;
         switch (currentPlayer) {
