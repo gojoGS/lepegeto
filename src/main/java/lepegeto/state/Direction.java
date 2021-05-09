@@ -1,5 +1,8 @@
 package lepegeto.state;
 
+/**
+ * Represents the four main and the four secondary directions.
+ */
 public enum Direction {
     NORTH(-1, 0),
     NORTHEAST(-1, 1),
@@ -17,14 +20,26 @@ public enum Direction {
         this.colChange = colChange;
     }
 
+    /**
+     * {@return the change in the row coordinate when moving to the direction}
+     */
     public int getColChange() {
         return colChange;
     }
 
+    /**
+     * {@return the change in the column coordinate when moving to the direction}
+     */
     public int getRowChange() {
         return rowChange;
     }
 
+    /**
+     * {@return the direction that corresponds to the coordinate changes specified}
+     *
+     * @param rowChange the change in the row coordinate
+     * @param colChange the change in the column coordinate
+     */
     public static Direction of(int rowChange, int colChange) {
         for(var direction: values()) {
             if(direction.rowChange == rowChange && direction.colChange == colChange) {
