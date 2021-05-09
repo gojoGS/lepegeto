@@ -1,5 +1,8 @@
 package lepegeto.state;
 
+/**
+ * Represents a player.
+ */
 public enum Player {
     BLUE,
     RED;
@@ -9,6 +12,15 @@ public enum Player {
             return BLUE;
         } else {
             return RED;
+        }
+    }
+
+    @Override
+    public String toString() {
+        if(this.equals(BLUE)) {
+            return "Blue Player";
+        } else {
+            return "Red Player";
         }
     }
 
