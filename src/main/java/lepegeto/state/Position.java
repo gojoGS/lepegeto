@@ -1,13 +1,22 @@
 package lepegeto.state;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+
 import java.util.Objects;
 
 /**
  * Represents a 2D position.
  */
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Position implements Cloneable {
     private int row;
     private int col;
+
+    public Position() {
+        this.row = 0;
+        this.col = 0;
+    }
 
     /**
      * Creates a {@code Position} object.

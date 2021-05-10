@@ -1,5 +1,9 @@
 package lepegeto.state;
 
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlEnum;
+
 /**
  * Represents a player.
  */

@@ -1,6 +1,8 @@
 package lepegeto.state;
 
 import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import jaxb.PlayerAdapter;
 
 import java.util.Arrays;
 import java.util.StringJoiner;
@@ -10,15 +12,19 @@ import java.util.StringJoiner;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"BOARD_SIZE", "currentPlayer", "redPositions", "bluePositions", "forbiddenPositions"})
 public class GameState implements Cloneable {
 
     /**
      * The size of the board
      */
+    @XmlElement
     private static final int BOARD_SIZE = 5;
     /**
      * The current player
      */
+    @XmlElement
+    @XmlJavaTypeAdapter(PlayerAdapter.class)
     private Player currentPlayer;
 
     /**
@@ -45,7 +51,7 @@ public class GameState implements Cloneable {
     /**
      * Creates a {@code GameState} object that corresponds to the initial state of the game.
      */
-    GameState() {
+    public GameState() {
         redPositions = new Position[BOARD_SIZE];
         bluePositions = new Position[BOARD_SIZE];
         forbiddenPositions = new Position[4];
