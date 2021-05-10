@@ -7,8 +7,8 @@ public enum Player {
     BLUE,
     RED;
 
-    public static Player other(Player player) {
-        if(player.equals(RED)) {
+    public Player other() {
+        if(this.equals(RED)) {
             return BLUE;
         } else {
             return RED;
