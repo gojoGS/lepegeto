@@ -1,15 +1,15 @@
 package lepegeto.state;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.*;
 
 /**
  * Represents a player.
  */
+@XmlType
+@XmlEnum
 public enum Player {
-    BLUE,
-    RED;
+    @XmlEnumValue("Blue") BLUE,
+    @XmlEnumValue("Red") RED;
 
     public Player other() {
         if(this.equals(RED)) {
@@ -22,9 +22,9 @@ public enum Player {
     @Override
     public String toString() {
         if(this.equals(BLUE)) {
-            return "Blue Player";
+            return "Blue";
         } else {
-            return "Red Player";
+            return "Red";
         }
     }
 
