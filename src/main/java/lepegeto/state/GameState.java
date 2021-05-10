@@ -2,7 +2,9 @@ package lepegeto.state;
 
 import jakarta.xml.bind.annotation.*;
 
+import java.security.spec.PSSParameterSpec;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
@@ -23,21 +25,18 @@ public class GameState implements Cloneable {
      */
     @XmlElement
     private Player currentPlayer = Player.BLUE;
-
     /**
      * The positions of the Red player
      */
     @XmlElementWrapper(name = "redPositions")
     @XmlElement(name = "position")
     private Position[] redPositions;
-
     /**
      * The positions of the Blue player
      */
     @XmlElementWrapper(name = "bluePositions")
     @XmlElement(name = "position")
     private Position[] bluePositions;
-
     /**
      * The position of block, inaccessible to both sides.
      */
@@ -156,8 +155,53 @@ public class GameState implements Cloneable {
         return false;
     }
 
-    public boolean isValid(Position position) {
+    private boolean isValid(Position position) {
         return !isForbidden(position) && !isOccupied(position) && isOnBoard(position);
+    }
+
+    public boolean isValidMove(Position position, Direction direction) {
+        var tmp = new Position(position.getRow(), position.getCol());
+        move(direction, tmp);
+
+        return isValid(tmp);
+    }
+
+    public void move(Direction direction, Position position) {
+        switch (direction) {
+            case WEST -> moveWest(position);
+            case EAST -> moveEast(position);
+            case NORTH -> moveNorth(position);
+            case SOUTH -> moveSouth(position);
+            case NORTHEAST -> moveNorthEast(position);
+            case NORTHWEST -> moveNorthWest(position);
+            case SOUTHEAST -> moveSouthEast(position);
+            case SOUTHWEST -> moveSouthWest(position);
+        }
+    }
+
+    private void moveWest(Position position) {
+        position.setWest();
+    }
+    private void moveEast(Position position) {
+        position.setEast();
+    }
+    private void moveSouth(Position position) {
+        position.setSouth();
+    }
+    private void moveNorth(Position position){
+        position.setNorth();
+    }
+    private void moveSouthEast(Position position) {
+        position.setSoutheast();
+    }
+    private void moveSouthWest(Position position) {
+        position.setSouthwest();
+    }
+    private void moveNorthEast(Position position) {
+        position.setNortheast();
+    }
+    private void moveNorthWest(Position position) {
+        position.setNorthwest();
     }
 
     @Override
@@ -190,11 +234,9 @@ public class GameState implements Cloneable {
                 && Arrays.equals(forbiddenPositions, ((GameState) o).forbiddenPositions);
     }
 
-
-    // TODO make adquite solution
     @Override
     public int hashCode() {
-        return Arrays.hashCode(redPositions);
+        return Objects.hash(Arrays.hashCode(redPositions), Arrays.hashCode(bluePositions), Arrays.hashCode(forbiddenPositions));
     }
 
     @Override
