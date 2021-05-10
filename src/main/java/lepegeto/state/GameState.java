@@ -1,8 +1,6 @@
 package lepegeto.state;
 
 import jakarta.xml.bind.annotation.*;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import jaxb.PlayerAdapter;
 
 import java.util.Arrays;
 import java.util.StringJoiner;
@@ -24,8 +22,7 @@ public class GameState implements Cloneable {
      * The current player
      */
     @XmlElement
-    @XmlJavaTypeAdapter(PlayerAdapter.class)
-    private Player currentPlayer;
+    private Player currentPlayer = Player.BLUE;
 
     /**
      * The positions of the Red player
@@ -202,10 +199,10 @@ public class GameState implements Cloneable {
 
     @Override
     public String toString() {
-        var mainSj = new StringJoiner(",", "{", "}");
-        var blueSj = new StringJoiner(",", "blue: [", "]");
-        var redSj = new StringJoiner(",", "red: [", "]");
-        var forbiddenSj = new StringJoiner(",", "forbidden: [", "]");
+        var mainSj = new StringJoiner(", ", "{", "}");
+        var blueSj = new StringJoiner(", ", "blue: [", "]");
+        var redSj = new StringJoiner(", ", "red: [", "]");
+        var forbiddenSj = new StringJoiner(", ", "forbidden: [", "]");
 
         for (var position : bluePositions) {
             blueSj.add(position.toString());
@@ -222,6 +219,8 @@ public class GameState implements Cloneable {
         mainSj.add(blueSj.toString());
         mainSj.add(redSj.toString());
         mainSj.add(forbiddenSj.toString());
+        mainSj.add(String.format("BOARD_SIZE: %d",BOARD_SIZE));
+        mainSj.add(String.format("currentPlayer: %s", currentPlayer.toString()));
 
         return mainSj.toString();
     }
