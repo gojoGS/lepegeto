@@ -5,6 +5,9 @@ import jakarta.xml.bind.annotation.*;
 import java.util.Arrays;
 import java.util.StringJoiner;
 
+/**
+ * Represents the state of the game.
+ */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 public class GameState implements Cloneable {
@@ -70,7 +73,7 @@ public class GameState implements Cloneable {
      * Sets the current player to the not current one.
      */
     public void nextPlayer() {
-        currentPlayer = Player.other(currentPlayer);
+        currentPlayer = currentPlayer.other();
     }
 
     public Position[] getCurrentPlayerPositions() {
