@@ -1,5 +1,6 @@
 package lepegeto.javafx.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
@@ -8,6 +9,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import lepegeto.model.Direction;
 import lepegeto.model.GameState;
 import lepegeto.model.Owner;
 import lepegeto.model.Position;
@@ -22,7 +24,10 @@ public class GameController {
     private Button resetButton;
 
     @FXML
-    private Button yield;
+    private Button yieldButton;
+
+    @FXML
+    private Button resetSelectionButton;
 
     @FXML
     private Button endTurnButton;
@@ -89,6 +94,17 @@ public class GameController {
         return color;
     }
 
+    private Color getColor() {
+        Color color;
+        switch (gameState.getCurrentPlayer()){
+            case RED -> color = Color.web("cc241d");
+            case BLUE -> color = Color.web("458588");
+            default -> throw new IllegalArgumentException();
+        }
+
+        return color;
+    }
+
     private Color getDarkColor() {
         Color color;
         switch (gameState.getCurrentPlayer()){
@@ -108,17 +124,17 @@ public class GameController {
     private void onLeftClick(MouseEvent event) {
         Position position = getPositionOfEvent(event);
 
-        if(gameState.isOccupiedByCurrentPlayer(position) && selected.size() < 2) {
+        if(gameState.isOccupiedByCurrentPlayer(position) && selected.size() < 2 && !selected.contains(position)) {
             getFigureOfEvent(event).setFill(getDarkColor());
             selected.add(position);
         }
-
+        System.out.printf("(%d, %d)\n", position.getRow(), position.getCol());
     }
 
     private void onRightClick(MouseEvent event) {
         Position position = getPositionOfEvent(event);
 
-        if(gameState.isFree(position) && ghosts.size() < 2) {
+        if(gameState.isFree(position) && ghosts.size() < 2 && !ghosts.contains(position)) {
             getFigureOfEvent(event).setFill(getGhostColor());
             ghosts.add(position);
         }
@@ -130,6 +146,93 @@ public class GameController {
             case PRIMARY -> onLeftClick(event);
             case SECONDARY -> onRightClick(event);
         }
+    }
+
+    private StackPane getSquareByPosition(int row, int col) {
+        for (var square : gameBoard.getChildren()) {
+            if (square instanceof StackPane) {
+                if (GridPane.getColumnIndex(square) == col && GridPane.getRowIndex(square) == row) {
+                    return (StackPane) square;
+                }
+            }
+        }
+
+        throw new IllegalArgumentException();
+    }
+
+    private StackPane getSquareByPosition(Position position) {
+        return getSquareByPosition(position.getRow(), position.getCol());
+    }
+
+    private void reincarnate() {
+        for(var pos: ghosts) {
+            var square = getSquareByPosition(pos.getRow(), pos.getCol());
+            var figure = (Circle) square.getChildren().get(0);
+            figure.setFill(Color.TRANSPARENT);
+        }
+    }
+
+    private void deselect() {
+        for(var pos: selected) {
+            var square = getSquareByPosition(pos.getRow(), pos.getCol());
+            var figure = (Circle) square.getChildren().get(0);
+            figure.setFill(getColor());
+        }
+    }
+
+    private boolean isValidSelection() {
+        Position selection1 = selected.get(0);
+        Position selection2 = selected.get(1);
+        Position ghost1 = ghosts.get(0);
+        Position ghost2 = ghosts.get(1);
+
+        try {
+            Direction direction1 = Direction.of(ghost1.getRow() - selection1.getRow(), ghost1.getCol() - selection1.getCol());
+            Direction direction2 = Direction.of(ghost2.getRow() - selection2.getRow(), ghost2.getCol() - selection2.getCol());
+
+            return direction2.equals(direction1);
+        } catch (IllegalArgumentException exception) {
+            return false;
+        }
+    }
+
+    public void  repaintOnMove() {
+        for(var p: selected) {
+            var square = getSquareByPosition(p);
+            var figure = (Circle)square.getChildren().get(0);
+            figure.setFill(Color.TRANSPARENT);
+        }
+
+        for(var p: ghosts) {
+            var square = getSquareByPosition(p);
+            var figure = (Circle)square.getChildren().get(0);
+            figure.setFill(getColor());
+        }
+    }
+
+    public void onResetSelection(ActionEvent event) {
+        reincarnate();
+        ghosts.clear();
+        deselect();
+        selected.clear();
+    }
+
+    public void onEndTurn(ActionEvent event) {
+
+        if(ghosts.size() != 2 && selected.size() != 2) {
+            System.out.println("Baj Van");
+            return;
+        }
+
+        if(isValidSelection()) {
+            repaintOnMove();
+            ghosts.clear();
+            selected.clear();
+            gameState.nextPlayer();
+        } else {
+            System.out.println("Baj Van");
+        }
+
     }
 
 }
