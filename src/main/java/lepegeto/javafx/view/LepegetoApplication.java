@@ -1,4 +1,4 @@
-package lepegeto.javafx;
+package lepegeto.javafx.view;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -16,8 +16,7 @@ public class LepegetoApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        fxmlLoader.setLocation(getClass().getResource("/fxml/gui.xml"));
-        Parent root = fxmlLoader.load();
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/game.fxml"));
         stage.setTitle("Jatek");
         stage.setResizable(false);
         stage.setScene(new Scene(root));
