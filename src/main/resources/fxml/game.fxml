@@ -29,8 +29,9 @@
                <Insets top="20.0" />
            </BorderPane.margin>
          <Button fx:id="resetButton" mnemonicParsing="false" style="-fx-background-color: #928374;" text="Reset" />
-           <Button fx:id="endTurnButton" mnemonicParsing="false" style="-fx-background-color: #928374;" text="End Turn" />
+           <Button fx:id="endTurnButton" mnemonicParsing="false" onAction="#onEndTurn" style="-fx-background-color: #928374;" text="End Turn" />
          <Button fx:id="yieldButton" mnemonicParsing="false" style="-fx-background-color: #928374;" text="Yield" />
+         <Button fx:id="resetSelectionButton" mnemonicParsing="false" onAction="#onResetSelection" style="-fx-background-color: #928374;" text="Reset Selection" />
        </HBox>
    </bottom>
    <padding>
