@@ -1,4 +1,4 @@
-package lepegeto.state;
+package lepegeto.model;
 
 import jakarta.xml.bind.annotation.*;
 

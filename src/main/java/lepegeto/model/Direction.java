@@ -1,4 +1,4 @@
-package lepegeto.state;
+package lepegeto.model;
 
 /**
  * Represents the four main and the four secondary directions.

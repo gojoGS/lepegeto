@@ -1,14 +1,13 @@
-package lepegeto.state;
+package lepegeto.model;
 
 import jakarta.xml.bind.annotation.*;
 
-import java.security.spec.PSSParameterSpec;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
- * Represents the state of the game.
+ * Represents the model of the game.
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,7 +44,7 @@ public class GameState implements Cloneable {
     private Position[] forbiddenPositions;
 
     /**
-     * Creates a {@code GameState} object that corresponds to the initial state of the game.
+     * Creates a {@code GameState} object that corresponds to the initial model of the game.
      */
     public GameState() {
         redPositions = new Position[BOARD_SIZE];
@@ -130,13 +129,43 @@ public class GameState implements Cloneable {
                 position.getCol() >= 0 && position.getCol() < BOARD_SIZE;
     }
 
-    private boolean isForbidden(Position position) {
+    public boolean isForbidden(Position position) {
         for (var pos : forbiddenPositions) {
             if (position.equals(pos)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public boolean isRed(Position position) {
+        for (var pos : redPositions) {
+            if (position.equals(pos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isBlue(Position position) {
+        for (var pos : bluePositions) {
+            if (position.equals(pos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Owner owner(Position position) {
+        if(isBlue(position)) {
+            return Owner.BLUE;
+        }else if(isRed(position)) {
+            return Owner.RED;
+        }else if(isForbidden(position)) {
+            return Owner.FORBIDDEN;
+        } else {
+            return Owner.NONE;
+        }
     }
 
     private boolean isOccupied(Position position) {
@@ -157,6 +186,18 @@ public class GameState implements Cloneable {
 
     private boolean isValid(Position position) {
         return !isForbidden(position) && !isOccupied(position) && isOnBoard(position);
+    }
+
+    public Position[] getRedPositions() {
+        return redPositions.clone();
+    }
+
+    public Position[] getBluePositions() {
+        return bluePositions.clone();
+    }
+
+    public Position[] getForbiddenPositions() {
+        return forbiddenPositions.clone();
     }
 
     public boolean isValidMove(Position position, Direction direction) {

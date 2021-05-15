@@ -1,6 +1,6 @@
 package lepegeto;
 
-import lepegeto.state.Direction;
+import lepegeto.model.Direction;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
