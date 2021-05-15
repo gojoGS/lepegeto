@@ -4,12 +4,15 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import lepegeto.model.GameState;
 import lepegeto.model.Owner;
 import lepegeto.model.Position;
+
+import java.util.ArrayList;
 
 public class GameController {
     @FXML
@@ -27,6 +30,9 @@ public class GameController {
     @FXML
     private Label currentPlayer;
 
+    ArrayList<Position> selected;
+    ArrayList<Position> ghosts;
+
     private GameState gameState;
 
     @FXML
@@ -39,6 +45,9 @@ public class GameController {
                 gameBoard.add(square, j, i);
             }
         }
+
+        selected = new ArrayList<Position>();
+        ghosts = new ArrayList<Position>();
     }
 
     private StackPane createSquare(Owner owner) {
@@ -53,8 +62,74 @@ public class GameController {
             case FORBIDDEN -> square.setBackground(new Background(new BackgroundFill(Color.web("#282828"), CornerRadii.EMPTY, Insets.EMPTY)));
         }
 
+        square.setOnMouseClicked(this::onMouseClick);
+
         square.getChildren().add(piece);
         return square;
+    }
+
+    private Position getPositionOfEvent(MouseEvent event) {
+        var square = (StackPane) event.getSource();
+        var figure = (Circle) square.getChildren().get(0);
+
+        var row = GridPane.getRowIndex(square);
+        var col = GridPane.getColumnIndex(square);
+
+        return new Position(row, col);
+    }
+
+    private Color getGhostColor() {
+        Color color;
+        switch (gameState.getCurrentPlayer()){
+            case RED -> color = Color.web("fb4934");
+            case BLUE -> color = Color.web("83a598");
+            default -> throw new IllegalArgumentException();
+        }
+
+        return color;
+    }
+
+    private Color getDarkColor() {
+        Color color;
+        switch (gameState.getCurrentPlayer()){
+            case RED -> color = Color.web("9d0006");
+            case BLUE -> color = Color.web("076678");
+            default -> throw new IllegalArgumentException();
+        }
+
+        return color;
+    }
+
+    private Circle getFigureOfEvent(MouseEvent event) {
+        var square = (StackPane) event.getSource();
+        return (Circle) square.getChildren().get(0);
+    }
+
+    private void onLeftClick(MouseEvent event) {
+        Position position = getPositionOfEvent(event);
+
+        if(gameState.isOccupiedByCurrentPlayer(position) && selected.size() < 2) {
+            getFigureOfEvent(event).setFill(getDarkColor());
+            selected.add(position);
+        }
+
+    }
+
+    private void onRightClick(MouseEvent event) {
+        Position position = getPositionOfEvent(event);
+
+        if(gameState.isFree(position) && ghosts.size() < 2) {
+            getFigureOfEvent(event).setFill(getGhostColor());
+            ghosts.add(position);
+        }
+        System.out.printf("(%d, %d)\n", position.getRow(), position.getCol());
+    }
+
+    private void onMouseClick(MouseEvent event) {
+        switch (event.getButton()) {
+            case PRIMARY -> onLeftClick(event);
+            case SECONDARY -> onRightClick(event);
+        }
     }
 
 }
