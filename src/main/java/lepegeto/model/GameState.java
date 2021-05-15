@@ -147,6 +147,14 @@ public class GameState implements Cloneable {
         return false;
     }
 
+    public boolean isFree(Position position) {
+        return !isBlue(position) && !isRed(position) && !isForbidden(position);
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
     public boolean isBlue(Position position) {
         for (var pos : bluePositions) {
             if (position.equals(pos)) {
