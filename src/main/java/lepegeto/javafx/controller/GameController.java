@@ -16,6 +16,8 @@ import lepegeto.model.Position;
 
 import java.util.ArrayList;
 
+import static java.lang.System.exit;
+
 public class GameController {
     @FXML
     private GridPane gameBoard;
@@ -196,7 +198,14 @@ public class GameController {
         }
     }
 
-    public void  repaintOnMove() {
+    private Direction getSelectionDirection() {
+        Position selection1 = selected.get(0);
+        Position ghost1 = ghosts.get(0);
+
+        return Direction.of(ghost1.getRow() - selection1.getRow(), ghost1.getCol() - selection1.getCol());
+    }
+
+    private void repaintOnMove() {
         for(var p: selected) {
             var square = getSquareByPosition(p);
             var figure = (Circle)square.getChildren().get(0);
@@ -210,11 +219,23 @@ public class GameController {
         }
     }
 
+    private void moveSelected(Direction direction) {
+        for(var pos: selected) {
+            Position newPosition = gameState.getPositionAt(pos);
+            gameState.move(direction, newPosition);
+        }
+    }
+
+    private void clearSelection() {
+        ghosts.clear();
+        selected.clear();
+    }
+
     public void onResetSelection(ActionEvent event) {
         reincarnate();
-        ghosts.clear();
         deselect();
-        selected.clear();
+
+        clearSelection();
     }
 
     public void onEndTurn(ActionEvent event) {
@@ -225,14 +246,23 @@ public class GameController {
         }
 
         if(isValidSelection()) {
+            moveSelected(getSelectionDirection());
             repaintOnMove();
-            ghosts.clear();
-            selected.clear();
-            gameState.nextPlayer();
+            clearSelection();
+
+            if(gameState.isCurrentPlayerWinner()) {
+                exit(0);
+            } else {
+                gameState.nextPlayer();
+            }
         } else {
             System.out.println("Baj Van");
         }
 
+    }
+
+    public void onYield(ActionEvent event) {
+        exit(0);
     }
 
 }
