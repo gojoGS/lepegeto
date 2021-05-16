@@ -45,6 +45,8 @@ public class GameController {
     @FXML
     public void initialize() {
         gameState = new GameState();
+        gameBoard.getChildren().clear();
+        currentPlayer.setText(gameState.getCurrentPlayer().toString());
 
         for (int i = 0; i < gameBoard.getRowCount(); i++) {
             for (int j = 0; j < gameBoard.getColumnCount(); j++) {
@@ -254,6 +256,7 @@ public class GameController {
                 exit(0);
             } else {
                 gameState.nextPlayer();
+                currentPlayer.setText(gameState.getCurrentPlayer().toString());
             }
         } else {
             System.out.println("Baj Van");
@@ -263,6 +266,10 @@ public class GameController {
 
     public void onYield(ActionEvent event) {
         exit(0);
+    }
+    public void onReset(ActionEvent event) {
+        clearSelection();
+        initialize();
     }
 
 }
