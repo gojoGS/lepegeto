@@ -28,7 +28,7 @@
            <BorderPane.margin>
                <Insets top="20.0" />
            </BorderPane.margin>
-         <Button fx:id="resetButton" mnemonicParsing="false" style="-fx-background-color: #928374;" text="Reset" />
+         <Button fx:id="resetButton" mnemonicParsing="false" onAction="#onReset" style="-fx-background-color: #928374;" text="Reset" />
            <Button fx:id="endTurnButton" mnemonicParsing="false" onAction="#onEndTurn" style="-fx-background-color: #928374;" text="End Turn" />
          <Button fx:id="yieldButton" mnemonicParsing="false" onAction="#onYield" style="-fx-background-color: #928374;" text="Yield" />
          <Button fx:id="resetSelectionButton" mnemonicParsing="false" onAction="#onResetSelection" style="-fx-background-color: #928374;" text="Reset Selection" />
@@ -44,4 +44,16 @@
          </BorderPane.margin>
       </Label>
    </top>
+   <right>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button mnemonicParsing="false" text="Load Game" />
+            <Button mnemonicParsing="false" text="Save Game" />
+            <Button mnemonicParsing="false" text="Save &amp; Exit" />
+         </children>
+      </VBox>
+   </right>
+   <left>
+      <Label text="Label" BorderPane.alignment="CENTER" />
+   </left>
 </BorderPane>
