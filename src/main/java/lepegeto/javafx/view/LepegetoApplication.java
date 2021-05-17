@@ -16,7 +16,7 @@ public class LepegetoApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/game.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fxml/opening.fxml"));
         stage.setTitle("Jatek");
         stage.setResizable(false);
         stage.setScene(new Scene(root));
