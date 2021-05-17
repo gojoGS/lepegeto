@@ -8,6 +8,9 @@ import javafx.stage.Stage;
 
 import javax.inject.Inject;
 
+/**
+ * A class that represents the JavaFX application.
+ */
 public class LepegetoApplication extends Application {
 
     @Inject
