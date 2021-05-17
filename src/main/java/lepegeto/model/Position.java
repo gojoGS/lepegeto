@@ -11,11 +11,11 @@ import java.util.Objects;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Position implements Cloneable {
     /**
-     * X coordinate of {@link Position}.
+     * Y coordinate of {@link Position}.
      */
     private int row;
     /**
-     * Y coordinate of {@link Position}.
+     * X coordinate of {@link Position}.
      */
     private int col;
 
@@ -40,7 +40,7 @@ public class Position implements Cloneable {
 
     /**
      * Returns the row coordinate of the position.
-     * @return the X coordinate
+     * @return the Y coordinate
      */
     public int getRow() {
         return row;
@@ -48,7 +48,7 @@ public class Position implements Cloneable {
 
     /**
      * Returns the column coordinate of the position.
-     * @return the Y coordinate
+     * @return the X coordinate
      */
     public int getCol() {
         return col;
