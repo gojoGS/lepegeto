@@ -1,26 +1,28 @@
 package lepegeto.javafx.controller;
 
 import jakarta.xml.bind.JAXBException;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import lepegeto.model.Direction;
 import lepegeto.model.GameState;
 import lepegeto.model.Owner;
 import lepegeto.model.Position;
+import lombok.SneakyThrows;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 
 import static java.lang.System.exit;
@@ -48,7 +50,7 @@ public class GameController {
     public void initialize(GameState state) {
         gameState = state;
         gameBoard.getChildren().clear();
-        currentPlayer.setText(gameState.getCurrentPlayer().toString());
+        setCurrentPlayerText();
 
         for (int i = 0; i < gameBoard.getRowCount(); i++) {
             for (int j = 0; j < gameBoard.getColumnCount(); j++) {
@@ -59,6 +61,8 @@ public class GameController {
 
         selected = new ArrayList<Position>();
         ghosts = new ArrayList<Position>();
+
+        clearMessage();
     }
 
     private void setMessage(String message) {
@@ -138,9 +142,24 @@ public class GameController {
     private void onLeftClick(MouseEvent event) {
         Position position = getPositionOfEvent(event);
 
-        if(gameState.isOccupiedByCurrentPlayer(position) && selected.size() < 2 && !selected.contains(position)) {
-            getFigureOfEvent(event).setFill(getDarkColor());
-            selected.add(position);
+//        if(gameState.isOccupiedByCurrentPlayer(position) && selected.size() < 2 && !selected.contains(position)) {
+//            getFigureOfEvent(event).setFill(getDarkColor());
+//            selected.add(position);
+//        }
+
+        if(gameState.isOccupiedByCurrentPlayer(position)) {
+            if(selected.size() < 2) {
+                if(!selected.contains(position)) {
+                    getFigureOfEvent(event).setFill(getDarkColor());
+                    selected.add(position);
+                } else {
+                    setMessage("You've already selected that one");
+                }
+            } else {
+                setMessage("You shall not select more!");
+            }
+        } else {
+            setMessage("Not yours to command, that one!");
         }
         System.out.printf("(%d, %d)\n", position.getRow(), position.getCol());
     }
@@ -148,14 +167,30 @@ public class GameController {
     private void onRightClick(MouseEvent event) {
         Position position = getPositionOfEvent(event);
 
-        if(gameState.isFree(position) && ghosts.size() < 2 && !ghosts.contains(position)) {
-            getFigureOfEvent(event).setFill(getGhostColor());
-            ghosts.add(position);
+//        if(gameState.isFree(position) && ghosts.size() < 2 && !ghosts.contains(position)) {
+//            getFigureOfEvent(event).setFill(getGhostColor());
+//            ghosts.add(position);
+//        }
+
+        if(gameState.isFree(position)) {
+            if(ghosts.size() < 2) {
+                if(!ghosts.contains(position)) {
+                    getFigureOfEvent(event).setFill(getGhostColor());
+                    ghosts.add(position);
+                } else {
+                    setMessage("You've already moved that one!");
+                }
+            } else {
+                setMessage("You shall not move more!");
+            }
+        } else {
+            setMessage("You shall not go there!");
         }
         System.out.printf("(%d, %d)\n", position.getRow(), position.getCol());
     }
 
     private void onMouseClick(MouseEvent event) {
+        clearMessage();
         switch (event.getButton()) {
             case PRIMARY -> onLeftClick(event);
             case SECONDARY -> onRightClick(event);
@@ -192,6 +227,10 @@ public class GameController {
             var figure = (Circle) square.getChildren().get(0);
             figure.setFill(getColor());
         }
+    }
+
+    private void setCurrentPlayerText() {
+        currentPlayer.setText(String.format("%s's turn", gameState.getCurrentPlayer().toString()));
     }
 
     private boolean isValidSelection() {
@@ -253,7 +292,7 @@ public class GameController {
     public void onEndTurn(ActionEvent event) {
 
         if(ghosts.size() != 2 && selected.size() != 2) {
-            System.out.println("Baj Van");
+            setMessage("Please, make your moves!");
             return;
         }
 
@@ -263,13 +302,14 @@ public class GameController {
             clearSelection();
 
             if(gameState.isCurrentPlayerWinner()) {
-                exit(0);
+                onYield(event);
             } else {
                 gameState.nextPlayer();
-                currentPlayer.setText(gameState.getCurrentPlayer().toString());
+                setCurrentPlayerText();
+                clearMessage();
             }
         } else {
-            System.out.println("Baj Van");
+            setMessage("Invalid move! Try something else!");
         }
 
     }
@@ -285,7 +325,7 @@ public class GameController {
             try {
                 util.jaxb.JAXBHelper.toXML(gameState, new FileOutputStream(selected));
             } catch (JAXBException | FileNotFoundException e) {
-                e.printStackTrace();
+                setMessage("Error while saving file.");
             }
         }
     }
@@ -304,23 +344,46 @@ public class GameController {
                initialize(newState);
 
             } catch (JAXBException | FileNotFoundException e) {
-                e.printStackTrace();
+                setMessage("Error while loading file.");
             }
         }
     }
 
     public void onSaveAndExit(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save As");
 
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Save File", "*.xml"));
+        File selected = fileChooser.showSaveDialog(gameBoard.getScene().getWindow());
+
+        if (selected != null) {
+            try {
+                util.jaxb.JAXBHelper.toXML(gameState, new FileOutputStream(selected));
+                Platform.exit();
+            } catch (JAXBException | FileNotFoundException e) {
+                setMessage("Error while saving file.");
+            }
+        }
     }
 
     public void onExit(ActionEvent event) {
-        exit(0);
+        Platform.exit();
     }
 
     // TODO switch to endscreen
-    public void onYield(ActionEvent event) {
-        exit(0);
+    @SneakyThrows
+    public void onYield(ActionEvent event)  {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ending.fxml"));
+        Parent root = fxmlLoader.load();
+
+        var controller = (EndingController)fxmlLoader.getController();
+        controller.setWinner(gameState.getCurrentPlayer());
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(root));
+        stage.show();
     }
+
     public void onReset(ActionEvent event) {
         clearSelection();
         initialize();
