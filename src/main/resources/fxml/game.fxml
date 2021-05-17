@@ -23,37 +23,46 @@
         </rowConstraints>
       </GridPane>
    </center>
-   <bottom>
-       <HBox alignment="CENTER" spacing="20.0" BorderPane.alignment="CENTER">
-           <BorderPane.margin>
-               <Insets top="20.0" />
-           </BorderPane.margin>
-         <Button fx:id="resetButton" mnemonicParsing="false" onAction="#onReset" style="-fx-background-color: #928374;" text="Reset" />
-           <Button fx:id="endTurnButton" mnemonicParsing="false" onAction="#onEndTurn" style="-fx-background-color: #928374;" text="End Turn" />
-         <Button fx:id="yieldButton" mnemonicParsing="false" onAction="#onYield" style="-fx-background-color: #928374;" text="Yield" />
-         <Button fx:id="resetSelectionButton" mnemonicParsing="false" onAction="#onResetSelection" style="-fx-background-color: #928374;" text="Reset Selection" />
-       </HBox>
-   </bottom>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
    </padding>
-   <top>
-      <Label fx:id="currentPlayer" text="Current Turn" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="20.0" />
-         </BorderPane.margin>
-      </Label>
-   </top>
    <right>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER_LEFT">
          <children>
-            <Button mnemonicParsing="false" text="Load Game" />
-            <Button mnemonicParsing="false" text="Save Game" />
-            <Button mnemonicParsing="false" text="Save &amp; Exit" />
+            <Button fx:id="loadGameButton" mnemonicParsing="false" onAction="#onLoadGame" style="-fx-background-color: #928374;" text="Load Game" />
+            <Button fx:id="saveGameButton" mnemonicParsing="false" onAction="#onSaveGame" style="-fx-background-color: #928374;" text="Save Game" />
+            <Button fx:id="saveAndExitButton" mnemonicParsing="false" onAction="#onSaveAndExit" style="-fx-background-color: #928374;" text="Save &amp; Exit" />
+            <Button fx:id="exitButton" mnemonicParsing="false" onAction="#onExit" style="-fx-background-color: #928374;" text="Exit" />
          </children>
+         <BorderPane.margin>
+            <Insets left="10.0" />
+         </BorderPane.margin>
       </VBox>
    </right>
    <left>
-      <Label text="Label" BorderPane.alignment="CENTER" />
+      <VBox alignment="CENTER_RIGHT" prefHeight="200.0" prefWidth="100.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <children>
+            <Button fx:id="resetSelectionButton" mnemonicParsing="false" onAction="#onResetSelection" style="-fx-background-color: #928374;" text="Reset Move" />
+              <Button fx:id="endTurnButton" mnemonicParsing="false" onAction="#onEndTurn" style="-fx-background-color: #928374;" text="End Turn" />
+            <Button fx:id="yieldButton" mnemonicParsing="false" onAction="#onYield" style="-fx-background-color: #928374;" text="Yield" />
+            <Button fx:id="resetButton" mnemonicParsing="false" onAction="#onReset" style="-fx-background-color: #928374;" text="Reset" />
+         </children>
+         <BorderPane.margin>
+            <Insets right="10.0" />
+         </BorderPane.margin>
+      </VBox>
    </left>
+   <bottom>
+      <TextField fx:id="messageTextField" mouseTransparent="true" style="-fx-background-color: #f9f5d7;" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets top="10.0" />
+         </BorderPane.margin></TextField>
+   </bottom>
+   <top>
+      <TextField fx:id="currentPlayer" alignment="CENTER" style="-fx-background-color: #b16286;" BorderPane.alignment="CENTER">
+         <BorderPane.margin>
+            <Insets bottom="10.0" />
+         </BorderPane.margin>
+      </TextField>
+   </top>
 </BorderPane>
