@@ -25,8 +25,10 @@ import lombok.SneakyThrows;
 import java.io.*;
 import java.util.ArrayList;
 
-import static java.lang.System.exit;
 
+/**
+ * Controller class of the game UI.
+ */
 public class GameController {
     @FXML
     private GridPane gameBoard;
@@ -37,16 +39,23 @@ public class GameController {
     @FXML
     private TextField messageTextField;
 
-    ArrayList<Position> selected;
-    ArrayList<Position> ghosts;
+    private ArrayList<Position> selected;
+    private ArrayList<Position> ghosts;
 
     private GameState gameState;
 
+    /**
+     * Initializes a game with a default state.
+     */
     @FXML
     public void initialize() {
         initialize(new GameState());
     }
 
+    /**
+     * Initializes a game with a given state.
+     * @param state the state of the game after initialization.
+     */
     public void initialize(GameState state) {
         gameState = state;
         gameBoard.getChildren().clear();
@@ -142,11 +151,6 @@ public class GameController {
     private void onLeftClick(MouseEvent event) {
         Position position = getPositionOfEvent(event);
 
-//        if(gameState.isOccupiedByCurrentPlayer(position) && selected.size() < 2 && !selected.contains(position)) {
-//            getFigureOfEvent(event).setFill(getDarkColor());
-//            selected.add(position);
-//        }
-
         if(gameState.isOccupiedByCurrentPlayer(position)) {
             if(selected.size() < 2) {
                 if(!selected.contains(position)) {
@@ -166,11 +170,6 @@ public class GameController {
 
     private void onRightClick(MouseEvent event) {
         Position position = getPositionOfEvent(event);
-
-//        if(gameState.isFree(position) && ghosts.size() < 2 && !ghosts.contains(position)) {
-//            getFigureOfEvent(event).setFill(getGhostColor());
-//            ghosts.add(position);
-//        }
 
         if(gameState.isFree(position)) {
             if(ghosts.size() < 2) {
@@ -282,6 +281,10 @@ public class GameController {
         selected.clear();
     }
 
+    /**
+     * resetSelectionButton handler.
+     * @param event the event object of the action
+     */
     public void onResetSelection(ActionEvent event) {
         reincarnate();
         deselect();
@@ -289,6 +292,10 @@ public class GameController {
         clearSelection();
     }
 
+    /**
+     * endTurnButton handler.
+     * @param event the event object of the action
+     */
     public void onEndTurn(ActionEvent event) {
 
         if(ghosts.size() != 2 && selected.size() != 2) {
@@ -314,6 +321,10 @@ public class GameController {
 
     }
 
+    /**
+     * saveGameButton handler.
+     * @param event the event object of the action
+     */
     public void onSaveGame(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save As");
@@ -330,6 +341,10 @@ public class GameController {
         }
     }
 
+    /**
+     * loadGameButton handler.
+     * @param event the event object of the action
+     */
     public void onLoadGame(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open");
@@ -349,6 +364,10 @@ public class GameController {
         }
     }
 
+    /**
+     * saveAndExitButton handler.
+     * @param event the event object of the action
+     */
     public void onSaveAndExit(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save As");
@@ -366,10 +385,18 @@ public class GameController {
         }
     }
 
+    /**
+     * exitButton handler.
+     * @param event the event object of the action
+     */
     public void onExit(ActionEvent event) {
         Platform.exit();
     }
 
+    /**
+     * yieldButton handler.
+     * @param event the event object of the action
+     */
     @SneakyThrows
     public void onYield(ActionEvent event)  {
         gameState.nextPlayer();
@@ -384,6 +411,10 @@ public class GameController {
         stage.show();
     }
 
+    /**
+     * resetButton handler.
+     * @param event the event object of the action
+     */
     public void onReset(ActionEvent event) {
         clearSelection();
         initialize();
