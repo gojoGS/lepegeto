@@ -15,23 +15,23 @@ import java.util.StringJoiner;
 public class GameState implements Cloneable {
 
     /**
-     * The size of the board
+     * The size of the board.
      */
     @XmlElement
     private static final int BOARD_SIZE = 5;
     /**
-     * The current player
+     * The current player.
      */
     @XmlElement
     private Player currentPlayer = Player.BLUE;
     /**
-     * The positions of the Red player
+     * The positions of the Red player.
      */
     @XmlElementWrapper(name = "redPositions")
     @XmlElement(name = "position")
     private Position[] redPositions;
     /**
-     * The positions of the Blue player
+     * The positions of the Blue player.
      */
     @XmlElementWrapper(name = "bluePositions")
     @XmlElement(name = "position")
@@ -77,6 +77,10 @@ public class GameState implements Cloneable {
         currentPlayer = currentPlayer.other();
     }
 
+    /**
+     * Returns the current players positions.
+     * @return An array of positions.
+     */
     public Position[] getCurrentPlayerPositions() {
         if (currentPlayer.equals(Player.RED)) {
             return redPositions;
@@ -86,7 +90,8 @@ public class GameState implements Cloneable {
     }
 
     /**
-     * {@return whether the current player is the winner, based on the positions of his figures}
+     * Returns whether the current player is the winner, based on the positions of his figures.
+     * @return whether the current player is the winner, based on the positions of his figures.
      */
     public boolean isCurrentPlayerWinner() {
         int destinationRowNumber = -1;
@@ -103,6 +108,11 @@ public class GameState implements Cloneable {
         return true;
     }
 
+    /**
+     * Returns whether the owner of the {@link Position} is the current player.
+     * @param position the position in question
+     * @return whether {@code position} is owned by the current player.
+     */
     public boolean isOccupiedByCurrentPlayer(Position position) {
         for(var figure: getCurrentPlayerPositions()) {
             if(position.equals(figure)) {
@@ -113,6 +123,12 @@ public class GameState implements Cloneable {
         return false;
     }
 
+    /**
+     * Returns the position of the current player thats equals to the parameter {@code position}.
+     * @param position that we are looking for
+     * @throws IllegalArgumentException if position isnt owned by the current player
+     * @return a position of the current player
+     */
     public Position getPositionAt(Position position) {
 
         for(var figure: getCurrentPlayerPositions()) {
@@ -129,6 +145,11 @@ public class GameState implements Cloneable {
                 position.getCol() >= 0 && position.getCol() < BOARD_SIZE;
     }
 
+    /**
+     * Returns whether the owner of the {@link Position} is forbidden.
+     * @param position the position in question
+     * @return whether {@code position} is forbidden.
+     */
     public boolean isForbidden(Position position) {
         for (var pos : forbiddenPositions) {
             if (position.equals(pos)) {
@@ -138,6 +159,11 @@ public class GameState implements Cloneable {
         return false;
     }
 
+    /**
+     * Returns whether the owner of the {@link Position} is red.
+     * @param position the position in question
+     * @return whether {@code position} is owned by Red
+     */
     public boolean isRed(Position position) {
         for (var pos : redPositions) {
             if (position.equals(pos)) {
@@ -147,14 +173,28 @@ public class GameState implements Cloneable {
         return false;
     }
 
+    /**
+     * Returns whether the owner of the {@link Position} is no one.
+     * @param position the position in question
+     * @return whether {@code position} is owned by no one
+     */
     public boolean isFree(Position position) {
         return !isBlue(position) && !isRed(position) && !isForbidden(position);
     }
 
+    /**
+     * Returns the current {@link Player}.
+     * @return the current player.
+     */
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
 
+    /**
+     * Returns whether the owner of the {@link Position} is blue.
+     * @param position the position in question
+     * @return whether {@code position} is owned by Blue
+     */
     public boolean isBlue(Position position) {
         for (var pos : bluePositions) {
             if (position.equals(pos)) {
@@ -164,6 +204,11 @@ public class GameState implements Cloneable {
         return false;
     }
 
+    /**
+     * Returns the {@link Owner} of a {@link Position}.
+     * @param position The position
+     * @return The owner of the parameter {@code position}
+     */
     public Owner owner(Position position) {
         if(isBlue(position)) {
             return Owner.BLUE;
@@ -196,6 +241,11 @@ public class GameState implements Cloneable {
         return !isForbidden(position) && !isOccupied(position) && isOnBoard(position);
     }
 
+    /**
+     * Moves a {@link Position} in a {@link Direction}.
+     * @param direction the direction of the move
+     * @param position the initial position of the move.
+     */
     public void move(Direction direction, Position position) {
         switch (direction) {
             case WEST -> moveWest(position);
@@ -250,6 +300,7 @@ public class GameState implements Cloneable {
         return copy;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
