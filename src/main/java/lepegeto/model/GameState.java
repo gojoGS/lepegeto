@@ -1,6 +1,7 @@
 package lepegeto.model;
 
 import jakarta.xml.bind.annotation.*;
+import org.tinylog.Logger;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -247,6 +248,7 @@ public class GameState implements Cloneable {
      * @param position the initial position of the move.
      */
     public void move(Direction direction, Position position) {
+        Logger.info(String.format("%s is moved in direction %s", position.toString(), direction.toString()));
         switch (direction) {
             case WEST -> moveWest(position);
             case EAST -> moveEast(position);
