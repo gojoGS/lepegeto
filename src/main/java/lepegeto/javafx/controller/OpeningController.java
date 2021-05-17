@@ -18,6 +18,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+/**
+ * Controller class of the opening scene.
+ */
 public class OpeningController {
     @FXML
     private Button exitButton;
@@ -28,6 +31,11 @@ public class OpeningController {
     @FXML
     private Button loadGameButton;
 
+    /**
+     * newGameButton handler.
+     * @param event the event object of the action
+     * @throws IOException
+     */
     public void onNewGame(ActionEvent event) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
         Parent root = fxmlLoader.load();
@@ -37,9 +45,12 @@ public class OpeningController {
         stage.show();
     }
 
+    /**
+     * loadGameButton handler.
+     * @param event the event object of the action
+     * @throws IOException if savefile not found
+     */
     public void onLoadGame(ActionEvent event) throws IOException {
-
-
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open");
 
@@ -66,6 +77,9 @@ public class OpeningController {
         }
     }
 
+    /**
+     * exitButton handler.
+     */
     public void onExit() {
         Platform.exit();
     }
