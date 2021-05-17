@@ -45,7 +45,7 @@ public class GameController {
         initialize(new GameState());
     }
 
-    private void initialize(GameState state) {
+    public void initialize(GameState state) {
         gameState = state;
         gameBoard.getChildren().clear();
         currentPlayer.setText(gameState.getCurrentPlayer().toString());
