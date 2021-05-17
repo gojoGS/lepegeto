@@ -1,19 +1,26 @@
 package lepegeto.javafx.controller;
 
+import jakarta.xml.bind.JAXBException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.stage.FileChooser;
 import lepegeto.model.Direction;
 import lepegeto.model.GameState;
 import lepegeto.model.Owner;
 import lepegeto.model.Position;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 import static java.lang.System.exit;
@@ -23,19 +30,10 @@ public class GameController {
     private GridPane gameBoard;
 
     @FXML
-    private Button resetButton;
+    private TextField currentPlayer;
 
     @FXML
-    private Button yieldButton;
-
-    @FXML
-    private Button resetSelectionButton;
-
-    @FXML
-    private Button endTurnButton;
-
-    @FXML
-    private Label currentPlayer;
+    private TextField messageTextField;
 
     ArrayList<Position> selected;
     ArrayList<Position> ghosts;
@@ -44,7 +42,11 @@ public class GameController {
 
     @FXML
     public void initialize() {
-        gameState = new GameState();
+        initialize(new GameState());
+    }
+
+    private void initialize(GameState state) {
+        gameState = state;
         gameBoard.getChildren().clear();
         currentPlayer.setText(gameState.getCurrentPlayer().toString());
 
@@ -57,6 +59,14 @@ public class GameController {
 
         selected = new ArrayList<Position>();
         ghosts = new ArrayList<Position>();
+    }
+
+    private void setMessage(String message) {
+        messageTextField.setText(message);
+    }
+
+    private void clearMessage() {
+        messageTextField.clear();
     }
 
     private StackPane createSquare(Owner owner) {
@@ -264,6 +274,50 @@ public class GameController {
 
     }
 
+    public void onSaveGame(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save As");
+
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Save File", "*.xml"));
+        File selected = fileChooser.showSaveDialog(gameBoard.getScene().getWindow());
+
+        if (selected != null) {
+            try {
+                util.jaxb.JAXBHelper.toXML(gameState, new FileOutputStream(selected));
+            } catch (JAXBException | FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void onLoadGame(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open");
+
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Save File", "*.xml"));
+        File selected = fileChooser.showOpenDialog(gameBoard.getScene().getWindow());
+
+        if (selected != null) {
+            try {
+               var newState = util.jaxb.JAXBHelper.fromXML(GameState.class, new FileInputStream(selected));
+               clearSelection();
+               initialize(newState);
+
+            } catch (JAXBException | FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void onSaveAndExit(ActionEvent event) {
+
+    }
+
+    public void onExit(ActionEvent event) {
+        exit(0);
+    }
+
+    // TODO switch to endscreen
     public void onYield(ActionEvent event) {
         exit(0);
     }
