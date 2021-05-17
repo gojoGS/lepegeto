@@ -301,10 +301,10 @@ public class GameController {
             repaintOnMove();
             clearSelection();
 
+            gameState.nextPlayer();
             if(gameState.isCurrentPlayerWinner()) {
                 onYield(event);
             } else {
-                gameState.nextPlayer();
                 setCurrentPlayerText();
                 clearMessage();
             }
@@ -370,9 +370,9 @@ public class GameController {
         Platform.exit();
     }
 
-    // TODO switch to endscreen
     @SneakyThrows
     public void onYield(ActionEvent event)  {
+        gameState.nextPlayer();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ending.fxml"));
         Parent root = fxmlLoader.load();
 
