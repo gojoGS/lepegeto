@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: ebdbb2;" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lepegeto.javafx.controller.OpeningController">
    <top>
@@ -26,4 +27,7 @@
          <Button fx:id="exitButton" mnemonicParsing="false" onAction="#onExit" style="-fx-background-color: #928374;" text="Exit" />
       </HBox>
    </center>
+   <bottom>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="HINT: Left click on a figure to select it, right click on a tile to move it there." BorderPane.alignment="CENTER" />
+   </bottom>
 </BorderPane>
