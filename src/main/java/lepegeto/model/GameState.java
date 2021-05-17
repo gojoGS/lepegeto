@@ -196,25 +196,6 @@ public class GameState implements Cloneable {
         return !isForbidden(position) && !isOccupied(position) && isOnBoard(position);
     }
 
-    public Position[] getRedPositions() {
-        return redPositions.clone();
-    }
-
-    public Position[] getBluePositions() {
-        return bluePositions.clone();
-    }
-
-    public Position[] getForbiddenPositions() {
-        return forbiddenPositions.clone();
-    }
-
-    public boolean isValidMove(Position position, Direction direction) {
-        var tmp = new Position(position.getRow(), position.getCol());
-        move(direction, tmp);
-
-        return isValid(tmp);
-    }
-
     public void move(Direction direction, Position position) {
         switch (direction) {
             case WEST -> moveWest(position);
