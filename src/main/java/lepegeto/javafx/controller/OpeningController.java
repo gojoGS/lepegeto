@@ -18,6 +18,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.tinylog.Logger;
+
 /**
  * Controller class of the opening scene.
  */
@@ -43,6 +45,8 @@ public class OpeningController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
+
+        Logger.info("Switched to game UI");
     }
 
     /**
@@ -70,10 +74,14 @@ public class OpeningController {
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 stage.setScene(new Scene(root));
                 stage.show();
+                Logger.info("Player loaded the game from Main Menu");
 
             } catch (JAXBException | FileNotFoundException e) {
                 e.printStackTrace();
+                Logger.error("Error has occured in Main Menu while reading and initializing new stage and gamestate");
             }
+        } else {
+            Logger.info("File not selected");
         }
     }
 
@@ -81,6 +89,7 @@ public class OpeningController {
      * exitButton handler.
      */
     public void onExit() {
+        Logger.info("Player exited the game from Main Menu");
         Platform.exit();
     }
 }

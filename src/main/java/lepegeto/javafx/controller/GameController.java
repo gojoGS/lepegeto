@@ -22,6 +22,8 @@ import lepegeto.model.Owner;
 import lepegeto.model.Position;
 import lombok.SneakyThrows;
 
+import org.tinylog.Logger;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -72,10 +74,13 @@ public class GameController {
         ghosts = new ArrayList<Position>();
 
         clearMessage();
+
+        Logger.info("Controller state initialized");
     }
 
     private void setMessage(String message) {
         messageTextField.setText(message);
+        Logger.info("New message set");
     }
 
     private void clearMessage() {
@@ -150,42 +155,50 @@ public class GameController {
 
     private void onLeftClick(MouseEvent event) {
         Position position = getPositionOfEvent(event);
+        Logger.info(String.format("Player clicked on position %s", position.toString()));
 
         if(gameState.isOccupiedByCurrentPlayer(position)) {
             if(selected.size() < 2) {
                 if(!selected.contains(position)) {
                     getFigureOfEvent(event).setFill(getDarkColor());
                     selected.add(position);
+                    Logger.info("Valid selection");
                 } else {
                     setMessage("You've already selected that one");
+                    Logger.warn("Invalid selection: figure already selected");
                 }
             } else {
                 setMessage("You shall not select more!");
+                Logger.warn("Invalid selection: cannot select more figure");
             }
         } else {
             setMessage("Not yours to command, that one!");
+            Logger.warn("Invalid selection: not current player figure");
         }
-        System.out.printf("(%d, %d)\n", position.getRow(), position.getCol());
     }
 
     private void onRightClick(MouseEvent event) {
         Position position = getPositionOfEvent(event);
+        Logger.info(String.format("Player clicked on position %s", position.toString()));
 
         if(gameState.isFree(position)) {
             if(ghosts.size() < 2) {
                 if(!ghosts.contains(position)) {
                     getFigureOfEvent(event).setFill(getGhostColor());
                     ghosts.add(position);
+                    Logger.info("Valid move target");
                 } else {
                     setMessage("You've already moved that one!");
+                    Logger.warn("Invalid move target: already moved");
                 }
             } else {
                 setMessage("You shall not move more!");
+                Logger.warn("Invalid move target: maximum move targets");
             }
         } else {
             setMessage("You shall not go there!");
+            Logger.warn("Invalid move target: invalid target position");
         }
-        System.out.printf("(%d, %d)\n", position.getRow(), position.getCol());
     }
 
     private void onMouseClick(MouseEvent event) {
@@ -205,6 +218,7 @@ public class GameController {
             }
         }
 
+        Logger.error(String.format("Invalid coordinates: row=%d col=%d", row, col));
         throw new IllegalArgumentException();
     }
 
@@ -286,6 +300,8 @@ public class GameController {
      * @param event the event object of the action
      */
     public void onResetSelection(ActionEvent event) {
+        Logger.info("resetSelectionButton clicked");
+
         reincarnate();
         deselect();
 
@@ -297,9 +313,11 @@ public class GameController {
      * @param event the event object of the action
      */
     public void onEndTurn(ActionEvent event) {
+        Logger.info("endTurnButton clicked");
 
         if(ghosts.size() != 2 && selected.size() != 2) {
             setMessage("Please, make your moves!");
+            Logger.warn("Not enough moves");
             return;
         }
 
@@ -310,13 +328,16 @@ public class GameController {
 
             gameState.nextPlayer();
             if(gameState.isCurrentPlayerWinner()) {
+                Logger.info("A player has won the game");
                 onYield(event);
             } else {
+                Logger.info("Next turn");
                 setCurrentPlayerText();
                 clearMessage();
             }
         } else {
             setMessage("Invalid move! Try something else!");
+            Logger.warn("Invalid move");
         }
 
     }
@@ -326,6 +347,7 @@ public class GameController {
      * @param event the event object of the action
      */
     public void onSaveGame(ActionEvent event) {
+        Logger.info("saveGameButton clicked");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save As");
 
@@ -335,9 +357,13 @@ public class GameController {
         if (selected != null) {
             try {
                 util.jaxb.JAXBHelper.toXML(gameState, new FileOutputStream(selected));
+                Logger.info(String.format("File saved at %s", selected.getAbsolutePath()));
             } catch (JAXBException | FileNotFoundException e) {
                 setMessage("Error while saving file.");
+                Logger.error("Error while saving file.");
             }
+        } else {
+            Logger.warn("File not selected");
         }
     }
 
@@ -346,6 +372,7 @@ public class GameController {
      * @param event the event object of the action
      */
     public void onLoadGame(ActionEvent event) {
+        Logger.info("loadGameButton clicked");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open");
 
@@ -357,10 +384,13 @@ public class GameController {
                var newState = util.jaxb.JAXBHelper.fromXML(GameState.class, new FileInputStream(selected));
                clearSelection();
                initialize(newState);
-
+               Logger.info(String.format("Gamestate loaded from %s", selected.getAbsolutePath()));
             } catch (JAXBException | FileNotFoundException e) {
                 setMessage("Error while loading file.");
+                Logger.error("Error while loading file.");
             }
+        } else {
+            Logger.warn("File not selected");
         }
     }
 
@@ -369,6 +399,7 @@ public class GameController {
      * @param event the event object of the action
      */
     public void onSaveAndExit(ActionEvent event) {
+        Logger.info("saveAndExitButton clicked");
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save As");
 
@@ -378,10 +409,14 @@ public class GameController {
         if (selected != null) {
             try {
                 util.jaxb.JAXBHelper.toXML(gameState, new FileOutputStream(selected));
+                Logger.info("Exiting from Game UI");
                 Platform.exit();
             } catch (JAXBException | FileNotFoundException e) {
                 setMessage("Error while saving file.");
+                Logger.error("Error while saving file.");
             }
+        } else {
+            Logger.warn("File not selected");
         }
     }
 
@@ -390,6 +425,8 @@ public class GameController {
      * @param event the event object of the action
      */
     public void onExit(ActionEvent event) {
+        Logger.info("exitButton clicked");
+        Logger.info("Exiting from Game UI");
         Platform.exit();
     }
 
@@ -399,6 +436,7 @@ public class GameController {
      */
     @SneakyThrows
     public void onYield(ActionEvent event)  {
+        Logger.info("yieldButton clicked");
         gameState.nextPlayer();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ending.fxml"));
         Parent root = fxmlLoader.load();
@@ -409,6 +447,7 @@ public class GameController {
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
+        Logger.info("Screen switched to endscreen");
     }
 
     /**
@@ -416,8 +455,10 @@ public class GameController {
      * @param event the event object of the action
      */
     public void onReset(ActionEvent event) {
+        Logger.info("resetButton clicked");
         clearSelection();
         initialize();
+        Logger.info("Gamestate reset done");
     }
 
 }
