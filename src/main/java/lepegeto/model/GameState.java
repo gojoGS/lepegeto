@@ -141,11 +141,6 @@ public class GameState implements Cloneable {
         throw new IllegalArgumentException();
     }
 
-    private boolean isOnBoard(Position position) {
-        return position.getRow() >= 0 && position.getRow() < BOARD_SIZE &&
-                position.getCol() >= 0 && position.getCol() < BOARD_SIZE;
-    }
-
     /**
      * Returns whether the owner of the {@link Position} is forbidden.
      * @param position the position in question
@@ -236,10 +231,6 @@ public class GameState implements Cloneable {
         }
 
         return false;
-    }
-
-    private boolean isValid(Position position) {
-        return !isForbidden(position) && !isOccupied(position) && isOnBoard(position);
     }
 
     /**
