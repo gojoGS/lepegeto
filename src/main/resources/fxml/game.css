@@ -1,7 +1,0 @@
-.square {
-    -fx-border-style: solid;
-}
-
-.square:hover {
-    -fx-background-color: black;
-}
