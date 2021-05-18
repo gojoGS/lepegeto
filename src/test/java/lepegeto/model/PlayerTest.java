@@ -1,6 +1,5 @@
-package lepegeto;
+package lepegeto.model;
 
-import lepegeto.model.Player;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

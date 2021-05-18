@@ -1,7 +1,7 @@
-package lepegeto;
+package lepegeto.model;
 
-import lepegeto.model.Direction;
 import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class DirectionTest {
