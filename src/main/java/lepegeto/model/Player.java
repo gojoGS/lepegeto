@@ -1,6 +1,8 @@
 package lepegeto.model;
 
-import jakarta.xml.bind.annotation.*;
+import jakarta.xml.bind.annotation.XmlEnum;
+import jakarta.xml.bind.annotation.XmlEnumValue;
+import jakarta.xml.bind.annotation.XmlType;
 
 /**
  * Represents a player.
@@ -19,10 +21,11 @@ public enum Player {
 
     /**
      * Returns the player that is not this one.
+     *
      * @return the other player
      */
     public Player other() {
-        if(this.equals(RED)) {
+        if (this.equals(RED)) {
             return BLUE;
         } else {
             return RED;
@@ -31,7 +34,7 @@ public enum Player {
 
     @Override
     public String toString() {
-        if(this.equals(BLUE)) {
+        if (this.equals(BLUE)) {
             return "Blue";
         } else {
             return "Red";

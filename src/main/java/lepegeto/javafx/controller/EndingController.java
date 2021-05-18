@@ -24,6 +24,7 @@ public class EndingController {
 
     /**
      * Sets {@code winnerTextField}'s value to the given parameter.
+     *
      * @param winner the color of the winner.
      */
     public void setWinner(Player winner) {
@@ -32,6 +33,7 @@ public class EndingController {
 
     /**
      * exitButton handler.
+     *
      * @param event the event object of the action
      */
     public void onExit(ActionEvent event) {
@@ -41,6 +43,7 @@ public class EndingController {
 
     /**
      * mainMenuButton handler.
+     *
      * @param event the event object of the action
      * @throws IOException if fmxl file not found or IO related error happens.
      */

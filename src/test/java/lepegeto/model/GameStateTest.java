@@ -1,6 +1,5 @@
 package lepegeto.model;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -29,19 +28,19 @@ class GameStateTest {
 
     @Test
     void getCurrentPlayerPositions() {
-        var blue = new Position[] {
-                new Position(0,0),
-                new Position(0,1),
-                new Position(0,2),
-                new Position(0,3),
-                new Position(0,4)};
+        var blue = new Position[]{
+                new Position(0, 0),
+                new Position(0, 1),
+                new Position(0, 2),
+                new Position(0, 3),
+                new Position(0, 4)};
 
-        var red = new Position[] {
-                new Position(4,0),
-                new Position(4,1),
-                new Position(4,2),
-                new Position(4,3),
-                new Position(4,4)};
+        var red = new Position[]{
+                new Position(4, 0),
+                new Position(4, 1),
+                new Position(4, 2),
+                new Position(4, 3),
+                new Position(4, 4)};
 
         assertArrayEquals(blue, state.getCurrentPlayerPositions());
 
@@ -59,13 +58,13 @@ class GameStateTest {
     void isOccupiedByCurrentPlayer() {
         var positions = state.getCurrentPlayerPositions();
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertTrue(state.isOccupiedByCurrentPlayer(position));
         }
 
         state.nextPlayer();
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertFalse(state.isOccupiedByCurrentPlayer(position));
         }
 
@@ -83,18 +82,18 @@ class GameStateTest {
 
     @Test
     void isForbidden() {
-        var positions = new Position[] {
+        var positions = new Position[]{
                 new Position(1, 1),
                 new Position(3, 1),
                 new Position(1, 3),
                 new Position(3, 3)
         };
 
-        for(var position: positions) {
+        for (var position : positions) {
             assertTrue(state.isForbidden(position));
         }
 
-        for(var position: state.getCurrentPlayerPositions()) {
+        for (var position : state.getCurrentPlayerPositions()) {
             assertFalse(state.isForbidden(position));
         }
     }
@@ -103,14 +102,14 @@ class GameStateTest {
     void isRed() {
         var positions = state.getCurrentPlayerPositions();
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertFalse(state.isRed(position));
         }
 
         state.nextPlayer();
         positions = state.getCurrentPlayerPositions();
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertTrue(state.isRed(position));
         }
     }
@@ -119,24 +118,24 @@ class GameStateTest {
     void isFree() {
         var positions = state.getCurrentPlayerPositions();
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertFalse(state.isFree(position));
         }
 
         state.nextPlayer();
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertFalse(state.isFree(position));
         }
 
-        positions = new Position[] {
-                new Position(2,0),
-                new Position(2,1),
-                new Position(2,2),
-                new Position(2,3),
-                new Position(2,4)};
+        positions = new Position[]{
+                new Position(2, 0),
+                new Position(2, 1),
+                new Position(2, 2),
+                new Position(2, 3),
+                new Position(2, 4)};
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertTrue(state.isFree(position));
         }
     }
@@ -156,14 +155,14 @@ class GameStateTest {
     void isBlue() {
         var positions = state.getCurrentPlayerPositions();
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertTrue(state.isBlue(position));
         }
 
         state.nextPlayer();
         positions = state.getCurrentPlayerPositions();
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertFalse(state.isBlue(position));
         }
     }
@@ -172,36 +171,36 @@ class GameStateTest {
     void owner() {
         var positions = state.getCurrentPlayerPositions();
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertEquals(Owner.BLUE, state.owner(position));
         }
 
         state.nextPlayer();
         positions = state.getCurrentPlayerPositions();
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertEquals(Owner.RED, state.owner(position));
         }
 
-        positions = new Position[] {
-                new Position(2,0),
-                new Position(2,1),
-                new Position(2,2),
-                new Position(2,3),
-                new Position(2,4)};
+        positions = new Position[]{
+                new Position(2, 0),
+                new Position(2, 1),
+                new Position(2, 2),
+                new Position(2, 3),
+                new Position(2, 4)};
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertEquals(Owner.NONE, state.owner(position));
         }
 
-        positions = new Position[] {
+        positions = new Position[]{
                 new Position(1, 1),
                 new Position(3, 1),
                 new Position(1, 3),
                 new Position(3, 3)
         };
 
-        for(var position : positions) {
+        for (var position : positions) {
             assertEquals(Owner.FORBIDDEN, state.owner(position));
         }
     }

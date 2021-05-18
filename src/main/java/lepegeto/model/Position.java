@@ -40,6 +40,7 @@ public class Position implements Cloneable {
 
     /**
      * Returns the row coordinate of the position.
+     *
      * @return the Y coordinate
      */
     public int getRow() {
@@ -48,6 +49,7 @@ public class Position implements Cloneable {
 
     /**
      * Returns the column coordinate of the position.
+     *
      * @return the X coordinate
      */
     public int getCol() {
@@ -58,8 +60,8 @@ public class Position implements Cloneable {
      * Return return the position whose vertical and horizontal distances from this
      * position are equal to the coordinate changes of the direction given.
      *
-     * @return The result position
      * @param direction a direction that specifies a change in the coordinates
+     * @return The result position
      */
     public Position getTarget(Direction direction) {
         return new Position(row + direction.getRowChange(), col + direction.getColChange());
@@ -67,6 +69,7 @@ public class Position implements Cloneable {
 
     /**
      * Return the position North from this one.
+     *
      * @return the {@link Position} North from this one
      */
     public Position getNorth() {
@@ -75,6 +78,7 @@ public class Position implements Cloneable {
 
     /**
      * Return the position Northeast from this one.
+     *
      * @return the {@link Position} Northeast from this one
      */
     public Position getNortheast() {
@@ -83,6 +87,7 @@ public class Position implements Cloneable {
 
     /**
      * Return the position East from this one.
+     *
      * @return the {@link Position} East from this one
      */
     public Position getEast() {
@@ -91,13 +96,16 @@ public class Position implements Cloneable {
 
     /**
      * Return the position Southeast from this one.
+     *
      * @return the {@link Position} Southeast from this one
      */
     public Position getSoutheast() {
         return getTarget(Direction.SOUTHEAST);
     }
+
     /**
      * Return the position South from this one.
+     *
      * @return the {@link Position} South from this one
      */
     public Position getSouth() {
@@ -106,6 +114,7 @@ public class Position implements Cloneable {
 
     /**
      * Return the position Southwest from this one.
+     *
      * @return the {@link Position} Southwest from this one
      */
     public Position getSouthwest() {
@@ -114,6 +123,7 @@ public class Position implements Cloneable {
 
     /**
      * Return the position West from this one.
+     *
      * @return the {@link Position} West from this one
      */
     public Position getWest() {
@@ -122,6 +132,7 @@ public class Position implements Cloneable {
 
     /**
      * Return the position Northwest from this one.
+     *
      * @return the {@link Position} Northwest from this one
      */
     public Position getNorthwest() {
@@ -196,11 +207,12 @@ public class Position implements Cloneable {
 
     /**
      * {@return whether {@code this} and {@code o} is equal}.
+     *
      * @param o the other object
      */
     @Override
     public boolean equals(Object o) {
-        if(o == this) {
+        if (o == this) {
             return true;
         }
 

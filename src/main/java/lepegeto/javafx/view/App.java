@@ -7,7 +7,8 @@ import javafx.application.Application;
  */
 public class App {
     /**
-     *  Launches the JavaFX {@link LepegetoApplication}.
+     * Launches the JavaFX {@link LepegetoApplication}.
+     *
      * @param args command line arguments
      */
     public static void main(String[] args) {

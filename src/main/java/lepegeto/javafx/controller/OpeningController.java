@@ -12,13 +12,12 @@ import javafx.scene.control.Button;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lepegeto.model.GameState;
+import org.tinylog.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import org.tinylog.Logger;
 
 /**
  * Controller class of the opening scene.
@@ -35,6 +34,7 @@ public class OpeningController {
 
     /**
      * newGameButton handler.
+     *
      * @param event the event object of the action
      * @throws IOException
      */
@@ -51,6 +51,7 @@ public class OpeningController {
 
     /**
      * loadGameButton handler.
+     *
      * @param event the event object of the action
      * @throws IOException if savefile not found
      */
@@ -68,7 +69,7 @@ public class OpeningController {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
                 Parent root = fxmlLoader.load();
 
-                var controller = (GameController)fxmlLoader.getController();
+                var controller = (GameController) fxmlLoader.getController();
                 controller.initialize(state);
 
                 Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

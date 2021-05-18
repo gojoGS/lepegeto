@@ -80,6 +80,7 @@ public class GameState implements Cloneable {
 
     /**
      * Returns the current players positions.
+     *
      * @return An array of positions.
      */
     public Position[] getCurrentPlayerPositions() {
@@ -92,6 +93,7 @@ public class GameState implements Cloneable {
 
     /**
      * Returns whether the current player is the winner, based on the positions of his figures.
+     *
      * @return whether the current player is the winner, based on the positions of his figures.
      */
     public boolean isCurrentPlayerWinner() {
@@ -111,12 +113,13 @@ public class GameState implements Cloneable {
 
     /**
      * Returns whether the owner of the {@link Position} is the current player.
+     *
      * @param position the position in question
      * @return whether {@code position} is owned by the current player.
      */
     public boolean isOccupiedByCurrentPlayer(Position position) {
-        for(var figure: getCurrentPlayerPositions()) {
-            if(position.equals(figure)) {
+        for (var figure : getCurrentPlayerPositions()) {
+            if (position.equals(figure)) {
                 return true;
             }
         }
@@ -126,14 +129,15 @@ public class GameState implements Cloneable {
 
     /**
      * Returns the position of the current player thats equals to the parameter {@code position}.
+     *
      * @param position that we are looking for
-     * @throws IllegalArgumentException if position isnt owned by the current player
      * @return a position of the current player
+     * @throws IllegalArgumentException if position isnt owned by the current player
      */
     public Position getPositionAt(Position position) {
 
-        for(var figure: getCurrentPlayerPositions()) {
-            if(position.equals(figure)) {
+        for (var figure : getCurrentPlayerPositions()) {
+            if (position.equals(figure)) {
                 return figure;
             }
         }
@@ -143,6 +147,7 @@ public class GameState implements Cloneable {
 
     /**
      * Returns whether the owner of the {@link Position} is forbidden.
+     *
      * @param position the position in question
      * @return whether {@code position} is forbidden.
      */
@@ -157,6 +162,7 @@ public class GameState implements Cloneable {
 
     /**
      * Returns whether the owner of the {@link Position} is red.
+     *
      * @param position the position in question
      * @return whether {@code position} is owned by Red
      */
@@ -171,6 +177,7 @@ public class GameState implements Cloneable {
 
     /**
      * Returns whether the owner of the {@link Position} is no one.
+     *
      * @param position the position in question
      * @return whether {@code position} is owned by no one
      */
@@ -180,6 +187,7 @@ public class GameState implements Cloneable {
 
     /**
      * Returns the current {@link Player}.
+     *
      * @return the current player.
      */
     public Player getCurrentPlayer() {
@@ -188,6 +196,7 @@ public class GameState implements Cloneable {
 
     /**
      * Returns whether the owner of the {@link Position} is blue.
+     *
      * @param position the position in question
      * @return whether {@code position} is owned by Blue
      */
@@ -202,15 +211,16 @@ public class GameState implements Cloneable {
 
     /**
      * Returns the {@link Owner} of a {@link Position}.
+     *
      * @param position The position
      * @return The owner of the parameter {@code position}
      */
     public Owner owner(Position position) {
-        if(isBlue(position)) {
+        if (isBlue(position)) {
             return Owner.BLUE;
-        }else if(isRed(position)) {
+        } else if (isRed(position)) {
             return Owner.RED;
-        }else if(isForbidden(position)) {
+        } else if (isForbidden(position)) {
             return Owner.FORBIDDEN;
         } else {
             return Owner.NONE;
@@ -235,8 +245,9 @@ public class GameState implements Cloneable {
 
     /**
      * Moves a {@link Position} in a {@link Direction}.
+     *
      * @param direction the direction of the move
-     * @param position the initial position of the move.
+     * @param position  the initial position of the move.
      */
     public void move(Direction direction, Position position) {
         Logger.info(String.format("%s is moved in direction %s", position.toString(), direction.toString()));
@@ -255,24 +266,31 @@ public class GameState implements Cloneable {
     private void moveWest(Position position) {
         position.setWest();
     }
+
     private void moveEast(Position position) {
         position.setEast();
     }
+
     private void moveSouth(Position position) {
         position.setSouth();
     }
-    private void moveNorth(Position position){
+
+    private void moveNorth(Position position) {
         position.setNorth();
     }
+
     private void moveSouthEast(Position position) {
         position.setSoutheast();
     }
+
     private void moveSouthWest(Position position) {
         position.setSouthwest();
     }
+
     private void moveNorthEast(Position position) {
         position.setNortheast();
     }
+
     private void moveNorthWest(Position position) {
         position.setNorthwest();
     }
@@ -335,7 +353,7 @@ public class GameState implements Cloneable {
         mainSj.add(blueSj.toString());
         mainSj.add(redSj.toString());
         mainSj.add(forbiddenSj.toString());
-        mainSj.add(String.format("BOARD_SIZE: %d",BOARD_SIZE));
+        mainSj.add(String.format("BOARD_SIZE: %d", BOARD_SIZE));
         mainSj.add(String.format("currentPlayer: %s", currentPlayer.toString()));
 
         return mainSj.toString();

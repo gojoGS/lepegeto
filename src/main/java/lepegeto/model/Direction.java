@@ -15,7 +15,7 @@ public enum Direction {
     /**
      * Direction of right.
      */
-    EAST(0,1),
+    EAST(0, 1),
     /**
      * Direction of down and right.
      */
@@ -48,6 +48,7 @@ public enum Direction {
 
     /**
      * Initializes a {@link Direction} with these two differences.
+     *
      * @param rowChange change in Y coordinates
      * @param colChange change in X coordinates
      */
@@ -57,7 +58,24 @@ public enum Direction {
     }
 
     /**
+     * Creates a {@link Direction} from two ints.
+     *
+     * @param rowChange the change in the row coordinate
+     * @param colChange the change in the column coordinate
+     * @return the direction that corresponds to the coordinate changes specified.
+     */
+    public static Direction of(int rowChange, int colChange) throws IllegalArgumentException {
+        for (var direction : values()) {
+            if (direction.rowChange == rowChange && direction.colChange == colChange) {
+                return direction;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
+    /**
      * Returns the column change of the {@link Direction}.
+     *
      * @return the change in the row coordinate when moving to the direction
      */
     public int getColChange() {
@@ -66,25 +84,10 @@ public enum Direction {
 
     /**
      * Returns the row change of the {@link Direction}.
+     *
      * @return the change in the column coordinate when moving to the direction
      */
     public int getRowChange() {
         return rowChange;
-    }
-
-    /**
-     * Creates a {@link Direction} from two ints.
-     * @return the direction that corresponds to the coordinate changes specified.
-     *
-     * @param rowChange the change in the row coordinate
-     * @param colChange the change in the column coordinate
-     */
-    public static Direction of(int rowChange, int colChange) throws IllegalArgumentException {
-        for(var direction: values()) {
-            if(direction.rowChange == rowChange && direction.colChange == colChange) {
-                return direction;
-            }
-        }
-        throw new IllegalArgumentException();
     }
 }

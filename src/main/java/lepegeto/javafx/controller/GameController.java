@@ -21,10 +21,12 @@ import lepegeto.model.GameState;
 import lepegeto.model.Owner;
 import lepegeto.model.Position;
 import lombok.SneakyThrows;
-
 import org.tinylog.Logger;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 
 
@@ -56,6 +58,7 @@ public class GameController {
 
     /**
      * Initializes a game with a given state.
+     *
      * @param state the state of the game after initialization.
      */
     public void initialize(GameState state) {
@@ -117,7 +120,7 @@ public class GameController {
 
     private Color getGhostColor() {
         Color color;
-        switch (gameState.getCurrentPlayer()){
+        switch (gameState.getCurrentPlayer()) {
             case RED -> color = Color.web("fb4934");
             case BLUE -> color = Color.web("83a598");
             default -> throw new IllegalArgumentException();
@@ -128,7 +131,7 @@ public class GameController {
 
     private Color getColor() {
         Color color;
-        switch (gameState.getCurrentPlayer()){
+        switch (gameState.getCurrentPlayer()) {
             case RED -> color = Color.web("cc241d");
             case BLUE -> color = Color.web("458588");
             default -> throw new IllegalArgumentException();
@@ -139,7 +142,7 @@ public class GameController {
 
     private Color getDarkColor() {
         Color color;
-        switch (gameState.getCurrentPlayer()){
+        switch (gameState.getCurrentPlayer()) {
             case RED -> color = Color.web("9d0006");
             case BLUE -> color = Color.web("076678");
             default -> throw new IllegalArgumentException();
@@ -157,9 +160,9 @@ public class GameController {
         Position position = getPositionOfEvent(event);
         Logger.info(String.format("Player clicked on position %s", position.toString()));
 
-        if(gameState.isOccupiedByCurrentPlayer(position)) {
-            if(selected.size() < 2) {
-                if(!selected.contains(position)) {
+        if (gameState.isOccupiedByCurrentPlayer(position)) {
+            if (selected.size() < 2) {
+                if (!selected.contains(position)) {
                     getFigureOfEvent(event).setFill(getDarkColor());
                     selected.add(position);
                     Logger.info("Valid selection");
@@ -181,9 +184,9 @@ public class GameController {
         Position position = getPositionOfEvent(event);
         Logger.info(String.format("Player clicked on position %s", position.toString()));
 
-        if(gameState.isFree(position)) {
-            if(ghosts.size() < 2) {
-                if(!ghosts.contains(position)) {
+        if (gameState.isFree(position)) {
+            if (ghosts.size() < 2) {
+                if (!ghosts.contains(position)) {
                     getFigureOfEvent(event).setFill(getGhostColor());
                     ghosts.add(position);
                     Logger.info("Valid move target");
@@ -227,7 +230,7 @@ public class GameController {
     }
 
     private void reincarnate() {
-        for(var pos: ghosts) {
+        for (var pos : ghosts) {
             var square = getSquareByPosition(pos.getRow(), pos.getCol());
             var figure = (Circle) square.getChildren().get(0);
             figure.setFill(Color.TRANSPARENT);
@@ -235,7 +238,7 @@ public class GameController {
     }
 
     private void deselect() {
-        for(var pos: selected) {
+        for (var pos : selected) {
             var square = getSquareByPosition(pos.getRow(), pos.getCol());
             var figure = (Circle) square.getChildren().get(0);
             figure.setFill(getColor());
@@ -270,21 +273,21 @@ public class GameController {
     }
 
     private void repaintOnMove() {
-        for(var p: selected) {
+        for (var p : selected) {
             var square = getSquareByPosition(p);
-            var figure = (Circle)square.getChildren().get(0);
+            var figure = (Circle) square.getChildren().get(0);
             figure.setFill(Color.TRANSPARENT);
         }
 
-        for(var p: ghosts) {
+        for (var p : ghosts) {
             var square = getSquareByPosition(p);
-            var figure = (Circle)square.getChildren().get(0);
+            var figure = (Circle) square.getChildren().get(0);
             figure.setFill(getColor());
         }
     }
 
     private void moveSelected(Direction direction) {
-        for(var pos: selected) {
+        for (var pos : selected) {
             Position newPosition = gameState.getPositionAt(pos);
             gameState.move(direction, newPosition);
         }
@@ -297,6 +300,7 @@ public class GameController {
 
     /**
      * resetSelectionButton handler.
+     *
      * @param event the event object of the action
      */
     public void onResetSelection(ActionEvent event) {
@@ -310,24 +314,25 @@ public class GameController {
 
     /**
      * endTurnButton handler.
+     *
      * @param event the event object of the action
      */
     public void onEndTurn(ActionEvent event) {
         Logger.info("endTurnButton clicked");
 
-        if(ghosts.size() != 2 && selected.size() != 2) {
+        if (ghosts.size() != 2 && selected.size() != 2) {
             setMessage("Please, make your moves!");
             Logger.warn("Not enough moves");
             return;
         }
 
-        if(isValidSelection()) {
+        if (isValidSelection()) {
             moveSelected(getSelectionDirection());
             repaintOnMove();
             clearSelection();
 
             gameState.nextPlayer();
-            if(gameState.isCurrentPlayerWinner()) {
+            if (gameState.isCurrentPlayerWinner()) {
                 Logger.info("A player has won the game");
                 onYield(event);
             } else {
@@ -344,6 +349,7 @@ public class GameController {
 
     /**
      * saveGameButton handler.
+     *
      * @param event the event object of the action
      */
     public void onSaveGame(ActionEvent event) {
@@ -369,6 +375,7 @@ public class GameController {
 
     /**
      * loadGameButton handler.
+     *
      * @param event the event object of the action
      */
     public void onLoadGame(ActionEvent event) {
@@ -381,10 +388,10 @@ public class GameController {
 
         if (selected != null) {
             try {
-               var newState = util.jaxb.JAXBHelper.fromXML(GameState.class, new FileInputStream(selected));
-               clearSelection();
-               initialize(newState);
-               Logger.info(String.format("Gamestate loaded from %s", selected.getAbsolutePath()));
+                var newState = util.jaxb.JAXBHelper.fromXML(GameState.class, new FileInputStream(selected));
+                clearSelection();
+                initialize(newState);
+                Logger.info(String.format("Gamestate loaded from %s", selected.getAbsolutePath()));
             } catch (JAXBException | FileNotFoundException e) {
                 setMessage("Error while loading file.");
                 Logger.error("Error while loading file.");
@@ -396,6 +403,7 @@ public class GameController {
 
     /**
      * saveAndExitButton handler.
+     *
      * @param event the event object of the action
      */
     public void onSaveAndExit(ActionEvent event) {
@@ -422,6 +430,7 @@ public class GameController {
 
     /**
      * exitButton handler.
+     *
      * @param event the event object of the action
      */
     public void onExit(ActionEvent event) {
@@ -432,16 +441,17 @@ public class GameController {
 
     /**
      * yieldButton handler.
+     *
      * @param event the event object of the action
      */
     @SneakyThrows
-    public void onYield(ActionEvent event)  {
+    public void onYield(ActionEvent event) {
         Logger.info("yieldButton clicked");
         gameState.nextPlayer();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ending.fxml"));
         Parent root = fxmlLoader.load();
 
-        var controller = (EndingController)fxmlLoader.getController();
+        var controller = (EndingController) fxmlLoader.getController();
         controller.setWinner(gameState.getCurrentPlayer());
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -452,6 +462,7 @@ public class GameController {
 
     /**
      * resetButton handler.
+     *
      * @param event the event object of the action
      */
     public void onReset(ActionEvent event) {
