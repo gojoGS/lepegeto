@@ -78,10 +78,6 @@ class PositionTest {
         assertPosition(-1, -1, position.getNorthwest());
     }
 
-//    @Test
-//    void setTarget() {
-//
-//    }
 
     @Test
     void setNorth() {
