@@ -7,8 +7,8 @@
   <groupId>lepegeto</groupId>
   <artifactId>jatek</artifactId>
   <packaging>jar</packaging>
-  <description>Game</description>
-  <version>1.0-SNAPSHOT</version>
+  <description>Lepegeto game for NBPM0420</description>
+  <version>1.0</version>
 
   <developers>
     <developer>
@@ -20,12 +20,12 @@
     </developer>
   </developers>
 
-  <name>jatek</name>
-  <!-- FIXME change it to the project's website -->
-  <url>http://www.example.com</url>
+  <name>LepegetoGame</name>
+
+  <url>https://github.com/gojoGS/lepegeto</url>
 
   <scm>
-    <developerConnection>scm:git:https://github.com/INBPM0420/homework-template-project.git</developerConnection>
+    <developerConnection>scm:git:https://github.com/gojoGS/lepegeto.git</developerConnection>
   </scm>
 
   <properties>
