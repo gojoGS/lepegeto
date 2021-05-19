@@ -16,7 +16,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import lepegeto.results.GameResult;
-import lepegeto.results.GameResultDao;
 import lepegeto.results.ResultManager;
 import org.tinylog.Logger;
 

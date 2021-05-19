@@ -18,7 +18,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lepegeto.model.*;
 import lepegeto.results.GameResult;
-import lepegeto.results.GameResultDao;
 import lepegeto.results.ResultManager;
 import lombok.SneakyThrows;
 import org.tinylog.Logger;

@@ -7,8 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import lepegeto.results.GameResultDao;
-import util.guice.PersistenceModule;
+
 
 import javax.inject.Inject;
 import java.util.List;
