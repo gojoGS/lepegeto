@@ -7,6 +7,7 @@
         <setting name="provider-name" value="Hibernate" />
         <datasource-mapping>
           <factory-entry name="jatek" />
+          <factory-entry name="rolling-cubes" />
         </datasource-mapping>
         <naming-strategy-map />
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
@@ -65,6 +66,7 @@
     <orderEntry type="library" name="Maven: org.openjfx:javafx-graphics:linux:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:16" level="project" />
     <orderEntry type="library" name="Maven: org.openjfx:javafx-base:linux:16" level="project" />
+    <orderEntry type="library" name="Maven: org.apache.commons:commons-lang3:3.12.0" level="project" />
     <orderEntry type="library" name="Maven: org.tinylog:tinylog-api:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.tinylog:tinylog-impl:2.3.1" level="project" />
     <orderEntry type="library" name="Maven: org.codehaus.mojo:animal-sniffer-annotations:1.18" level="project" />

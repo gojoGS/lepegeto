@@ -11,7 +11,7 @@ import java.util.*;
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = {"BOARD_SIZE", "currentPlayer", "redPositions", "bluePositions", "forbiddenPositions"})
+@XmlType(propOrder = {"BOARD_SIZE", "currentPlayer", "redPositions", "bluePositions", "forbiddenPositions", "players", "numberOfTurns"})
 public class GameState implements Cloneable {
 
     /**
