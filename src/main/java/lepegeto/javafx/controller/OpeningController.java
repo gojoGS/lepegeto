@@ -9,28 +9,38 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lepegeto.model.GameState;
+import lepegeto.model.Player;
 import org.tinylog.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Controller class of the opening scene.
  */
 public class OpeningController {
-    @FXML
-    private Button exitButton;
 
     @FXML
-    private Button newGameButton;
+    TextField player1TextField;
 
     @FXML
-    private Button loadGameButton;
+    TextField player2TextField;
+
+    private HashMap<Player, String> getNames() {
+        var names = new HashMap<Player, String>();
+
+        names.put(Player.BLUE, player1TextField.getText());
+        names.put(Player.RED, player2TextField.getText());
+
+        return names;
+    }
 
     /**
      * newGameButton handler.
@@ -39,8 +49,16 @@ public class OpeningController {
      * @throws IOException
      */
     public void onNewGame(ActionEvent event) throws IOException {
+        if(player1TextField.getText().isEmpty() || player2TextField.getText().isEmpty()) {
+            Logger.warn("User tried to start game without 2 names given");
+            return;
+        }
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/game.fxml"));
         Parent root = fxmlLoader.load();
+
+        var controller = (GameController) fxmlLoader.getController();
+        controller.setPlayerNames(getNames());
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));

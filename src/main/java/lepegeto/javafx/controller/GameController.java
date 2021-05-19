@@ -16,18 +16,19 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import lepegeto.model.Direction;
-import lepegeto.model.GameState;
-import lepegeto.model.Owner;
-import lepegeto.model.Position;
+import lepegeto.model.*;
+import lepegeto.results.GameResult;
+import lepegeto.results.GameResultDao;
 import lombok.SneakyThrows;
 import org.tinylog.Logger;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /**
@@ -43,10 +44,10 @@ public class GameController {
     @FXML
     private TextField messageTextField;
 
-    private ArrayList<Position> selected;
-    private ArrayList<Position> ghosts;
-
     private GameState gameState;
+
+    @Inject
+    private GameResultDao gameResultDao;
 
     /**
      * Initializes a game with a default state.
@@ -64,7 +65,6 @@ public class GameController {
     public void initialize(GameState state) {
         gameState = state;
         gameBoard.getChildren().clear();
-        setCurrentPlayerText();
 
         for (int i = 0; i < gameBoard.getRowCount(); i++) {
             for (int j = 0; j < gameBoard.getColumnCount(); j++) {
@@ -72,13 +72,14 @@ public class GameController {
                 gameBoard.add(square, j, i);
             }
         }
-
-        selected = new ArrayList<Position>();
-        ghosts = new ArrayList<Position>();
-
         clearMessage();
 
         Logger.info("Controller state initialized");
+    }
+
+    public void setPlayerNames(HashMap<Player, String> players) {
+        gameState.setPlayers(players);
+        setCurrentPlayerText();
     }
 
     private void setMessage(String message) {
@@ -160,45 +161,37 @@ public class GameController {
         Position position = getPositionOfEvent(event);
         Logger.info(String.format("Player clicked on position %s", position.toString()));
 
-        if (gameState.isOccupiedByCurrentPlayer(position)) {
-            if (selected.size() < 2) {
-                if (!selected.contains(position)) {
-                    getFigureOfEvent(event).setFill(getDarkColor());
-                    selected.add(position);
-                    Logger.info("Valid selection");
-                } else {
-                    setMessage("You've already selected that one");
-                    Logger.warn("Invalid selection: figure already selected");
-                }
-            } else {
-                setMessage("You shall not select more!");
-                Logger.warn("Invalid selection: cannot select more figure");
-            }
-        } else {
+        try {
+            gameState.addSelection(position);
+            getFigureOfEvent(event).setFill(getDarkColor());
+        } catch(IllegalArgumentException e) {
+            setMessage("You've already selected that one");
+            Logger.warn("Invalid selection: figure already selected");
+        } catch(IllegalStateException e) {
+            setMessage("You shall not select more!");
+            Logger.warn("Invalid selection: cannot select more figure");
+        } catch(IllegalCallerException e) {
             setMessage("Not yours to command, that one!");
             Logger.warn("Invalid selection: not current player figure");
         }
+
     }
 
     private void onRightClick(MouseEvent event) {
         Position position = getPositionOfEvent(event);
         Logger.info(String.format("Player clicked on position %s", position.toString()));
 
-        if (gameState.isFree(position)) {
-            if (ghosts.size() < 2) {
-                if (!ghosts.contains(position)) {
-                    getFigureOfEvent(event).setFill(getGhostColor());
-                    ghosts.add(position);
-                    Logger.info("Valid move target");
-                } else {
-                    setMessage("You've already moved that one!");
-                    Logger.warn("Invalid move target: already moved");
-                }
-            } else {
-                setMessage("You shall not move more!");
-                Logger.warn("Invalid move target: maximum move targets");
-            }
-        } else {
+        try{
+            gameState.addGhost(position);
+            getFigureOfEvent(event).setFill(getGhostColor());
+            Logger.info("Valid move target");
+        } catch(IllegalArgumentException e) {
+            setMessage("You've already moved that one!");
+            Logger.warn("Invalid move target: already moved");
+        } catch(IllegalStateException e) {
+            setMessage("You shall not move more!");
+            Logger.warn("Invalid move target: maximum move targets");
+        } catch(IllegalCallerException e) {
             setMessage("You shall not go there!");
             Logger.warn("Invalid move target: invalid target position");
         }
@@ -230,7 +223,7 @@ public class GameController {
     }
 
     private void reincarnate() {
-        for (var pos : ghosts) {
+        for (var pos : gameState.getGhosts()) {
             var square = getSquareByPosition(pos.getRow(), pos.getCol());
             var figure = (Circle) square.getChildren().get(0);
             figure.setFill(Color.TRANSPARENT);
@@ -238,41 +231,23 @@ public class GameController {
     }
 
     private void deselect() {
-        for (var pos : selected) {
+        for (var pos : gameState.getSelected()) {
             var square = getSquareByPosition(pos.getRow(), pos.getCol());
             var figure = (Circle) square.getChildren().get(0);
             figure.setFill(getColor());
         }
     }
 
+    private String getCurrentPlayerName() {
+        return gameState.getPlayers().get(gameState.getCurrentPlayer());
+    }
+
     private void setCurrentPlayerText() {
-        currentPlayer.setText(String.format("%s's turn", gameState.getCurrentPlayer().toString()));
+        currentPlayer.setText(String.format("%s's turn", getCurrentPlayerName()));
     }
 
-    private boolean isValidSelection() {
-        Position selection1 = selected.get(0);
-        Position selection2 = selected.get(1);
-        Position ghost1 = ghosts.get(0);
-        Position ghost2 = ghosts.get(1);
-
-        try {
-            Direction direction1 = Direction.of(ghost1.getRow() - selection1.getRow(), ghost1.getCol() - selection1.getCol());
-            Direction direction2 = Direction.of(ghost2.getRow() - selection2.getRow(), ghost2.getCol() - selection2.getCol());
-
-            return direction2.equals(direction1);
-        } catch (IllegalArgumentException exception) {
-            return false;
-        }
-    }
-
-    private Direction getSelectionDirection() {
-        Position selection1 = selected.get(0);
-        Position ghost1 = ghosts.get(0);
-
-        return Direction.of(ghost1.getRow() - selection1.getRow(), ghost1.getCol() - selection1.getCol());
-    }
-
-    private void repaintOnMove() {
+    private void repaintOnMove(ArrayList<Position> selected, ArrayList<Position> ghosts) {
+        gameState.nextPlayer();
         for (var p : selected) {
             var square = getSquareByPosition(p);
             var figure = (Circle) square.getChildren().get(0);
@@ -284,18 +259,7 @@ public class GameController {
             var figure = (Circle) square.getChildren().get(0);
             figure.setFill(getColor());
         }
-    }
-
-    private void moveSelected(Direction direction) {
-        for (var pos : selected) {
-            Position newPosition = gameState.getPositionAt(pos);
-            gameState.move(direction, newPosition);
-        }
-    }
-
-    private void clearSelection() {
-        ghosts.clear();
-        selected.clear();
+        gameState.nextPlayer();
     }
 
     /**
@@ -309,7 +273,7 @@ public class GameController {
         reincarnate();
         deselect();
 
-        clearSelection();
+        gameState.clearSelection();
     }
 
     /**
@@ -319,20 +283,13 @@ public class GameController {
      */
     public void onEndTurn(ActionEvent event) {
         Logger.info("endTurnButton clicked");
+        var selected = (ArrayList<Position>) gameState.getSelected().clone();
+        var ghosts = (ArrayList<Position>) gameState.getGhosts().clone();
+        try {
+            var won = gameState.endTurn();
 
-        if (ghosts.size() != 2 && selected.size() != 2) {
-            setMessage("Please, make your moves!");
-            Logger.warn("Not enough moves");
-            return;
-        }
-
-        if (isValidSelection()) {
-            moveSelected(getSelectionDirection());
-            repaintOnMove();
-            clearSelection();
-
-            gameState.nextPlayer();
-            if (gameState.isCurrentPlayerWinner()) {
+            repaintOnMove(selected, ghosts);
+            if (won) {
                 Logger.info("A player has won the game");
                 onYield(event);
             } else {
@@ -340,11 +297,13 @@ public class GameController {
                 setCurrentPlayerText();
                 clearMessage();
             }
-        } else {
+        } catch(IllegalArgumentException e) {
+            setMessage("Please, make your moves!");
+            Logger.warn("Not enough moves");
+        } catch(IllegalStateException e) {
             setMessage("Invalid move! Try something else!");
             Logger.warn("Invalid move");
         }
-
     }
 
     /**
@@ -389,7 +348,7 @@ public class GameController {
         if (selected != null) {
             try {
                 var newState = util.jaxb.JAXBHelper.fromXML(GameState.class, new FileInputStream(selected));
-                clearSelection();
+                gameState.clearSelection();
                 initialize(newState);
                 Logger.info(String.format("Gamestate loaded from %s", selected.getAbsolutePath()));
             } catch (JAXBException | FileNotFoundException e) {
@@ -448,16 +407,28 @@ public class GameController {
     public void onYield(ActionEvent event) {
         Logger.info("yieldButton clicked");
         gameState.nextPlayer();
+
+        gameResultDao.persist(createGameResult());
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ending.fxml"));
         Parent root = fxmlLoader.load();
 
         var controller = (EndingController) fxmlLoader.getController();
-        controller.setWinner(gameState.getCurrentPlayer());
+        controller.setWinner(getCurrentPlayerName(), gameState.getNumberOfTurns());
 
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         stage.setScene(new Scene(root));
         stage.show();
         Logger.info("Screen switched to endscreen");
+    }
+
+    private GameResult createGameResult() {
+        return GameResult.builder()
+                .player1(gameState.getPlayers().get(Player.BLUE))
+                .player2(gameState.getPlayers().get(Player.RED))
+                .winner(getCurrentPlayerName())
+                .steps(gameState.getNumberOfTurns())
+                .build();
     }
 
     /**
@@ -467,7 +438,7 @@ public class GameController {
      */
     public void onReset(ActionEvent event) {
         Logger.info("resetButton clicked");
-        clearSelection();
+        gameState.clearSelection();
         initialize();
         Logger.info("Gamestate reset done");
     }

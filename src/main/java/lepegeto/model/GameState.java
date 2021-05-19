@@ -1,11 +1,10 @@
 package lepegeto.model;
 
 import jakarta.xml.bind.annotation.*;
+import javafx.geometry.Pos;
 import org.tinylog.Logger;
 
-import java.util.Arrays;
-import java.util.Objects;
-import java.util.StringJoiner;
+import java.util.*;
 
 /**
  * Represents the model of the game.
@@ -44,10 +43,32 @@ public class GameState implements Cloneable {
     @XmlElement(name = "position")
     private Position[] forbiddenPositions;
 
+    @XmlElement
+    HashMap<Player, String> players;
+
+    @XmlElement
+    int numberOfTurns;
+
+    @XmlTransient
+    private ArrayList<Position> selected;
+    @XmlTransient
+    private ArrayList<Position> ghosts;
+
+    public HashMap<Player, String> getPlayers() {
+        return players;
+    }
+
+    public void setPlayers(HashMap<Player, String> players) {
+        this.players = players;
+    }
+
     /**
      * Creates a {@code GameState} object that corresponds to the initial model of the game.
      */
     public GameState() {
+        selected = new ArrayList<Position>();
+        ghosts = new ArrayList<Position>();
+
         redPositions = new Position[BOARD_SIZE];
         bluePositions = new Position[BOARD_SIZE];
         forbiddenPositions = new Position[4];
@@ -61,6 +82,8 @@ public class GameState implements Cloneable {
         forbiddenPositions[1] = new Position(1, 3);
         forbiddenPositions[2] = new Position(3, 1);
         forbiddenPositions[3] = new Position(3, 3);
+
+        players = new HashMap<Player, String>();
     }
 
     private static Position[] deepClone(Position[] a) {
@@ -69,6 +92,115 @@ public class GameState implements Cloneable {
             copy[i] = a[i].clone();
         }
         return copy;
+    }
+
+    public ArrayList<Position> getGhosts() {
+        return ghosts;
+    }
+
+    public ArrayList<Position> getSelected() {
+        return selected;
+    }
+
+    public boolean isValidSelection() {
+        Position selection1 = selected.get(0);
+        Position selection2 = selected.get(1);
+        Position ghost1 = ghosts.get(0);
+        Position ghost2 = ghosts.get(1);
+
+        try {
+            Direction direction1 = Direction.of(ghost1.getRow() - selection1.getRow(), ghost1.getCol() - selection1.getCol());
+            Direction direction2 = Direction.of(ghost2.getRow() - selection2.getRow(), ghost2.getCol() - selection2.getCol());
+
+            return direction2.equals(direction1);
+        } catch (IllegalArgumentException exception) {
+            return false;
+        }
+    }
+
+    public Direction getSelectionDirection() {
+        Position selection1 = selected.get(0);
+        Position ghost1 = ghosts.get(0);
+
+        return Direction.of(ghost1.getRow() - selection1.getRow(), ghost1.getCol() - selection1.getCol());
+    }
+
+    public void moveSelected(Direction direction) {
+        for (var pos : selected) {
+            Position newPosition = getPositionAt(pos);
+            move(direction, newPosition);
+        }
+    }
+
+    public void clearSelection() {
+        ghosts.clear();
+        selected.clear();
+    }
+
+    public boolean endTurn() throws IllegalArgumentException, IllegalStateException {
+
+        if (getGhosts().size() != 2 && getSelected().size() != 2) {
+            Logger.warn("Not enough moves");
+            throw new IllegalArgumentException();
+        }
+
+        if (isValidSelection()) {
+            moveSelected(getSelectionDirection());
+            clearSelection();
+
+            nextPlayer();
+            ++numberOfTurns;
+            if (isCurrentPlayerWinner()) {
+                Logger.info("A player has won the game");
+                return true;
+            } else {
+                Logger.info("Next turn");
+                return false;
+            }
+        } else {
+            Logger.warn("Invalid move");
+            throw new IllegalStateException();
+        }
+    }
+
+    public void addGhost(Position position) {
+        if (isFree(position)) {
+            if (getGhosts().size() < 2) {
+                if (!ghosts.contains(position)) {
+                    ghosts.add(position);
+                    Logger.info("Valid move target");
+                } else {
+                    Logger.warn("Invalid move target: already moved");
+                    throw new IllegalArgumentException();
+                }
+            } else {
+                Logger.warn("Invalid move target: maximum move targets");
+                throw new IllegalStateException();
+            }
+        } else {
+            Logger.warn("Invalid move target: invalid target position");
+            throw new IllegalCallerException();
+        }
+    }
+
+    public void addSelection(Position position) {
+        if (isOccupiedByCurrentPlayer(position)) {
+            if (getSelected().size() < 2) {
+                if (!getSelected().contains(position)) {
+                    getSelected().add(position);
+                    Logger.info("Valid selection");
+                } else {
+                    Logger.warn("Invalid selection: figure already selected");
+                    throw new IllegalArgumentException();
+                }
+            } else {
+                Logger.warn("Invalid selection: cannot select more figure");
+                throw new IllegalStateException();
+            }
+        } else {
+            Logger.warn("Invalid selection: not current player figure");
+            throw new IllegalCallerException();
+        }
     }
 
     /**
@@ -89,6 +221,10 @@ public class GameState implements Cloneable {
         } else {
             return bluePositions;
         }
+    }
+
+    public int getNumberOfTurns() {
+        return numberOfTurns;
     }
 
     /**
