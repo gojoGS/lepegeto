@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import lepegeto.model.*;
 import lepegeto.results.GameResult;
 import lepegeto.results.GameResultDao;
+import lepegeto.results.ResultManager;
 import lombok.SneakyThrows;
 import org.tinylog.Logger;
 
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -408,7 +410,8 @@ public class GameController {
         Logger.info("yieldButton clicked");
         gameState.nextPlayer();
 
-        gameResultDao.persist(createGameResult());
+        ResultManager resultManager = new ResultManager();
+        resultManager.insert(createGameResult());
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/ending.fxml"));
         Parent root = fxmlLoader.load();
@@ -428,6 +431,7 @@ public class GameController {
                 .player2(gameState.getPlayers().get(Player.RED))
                 .winner(getCurrentPlayerName())
                 .steps(gameState.getNumberOfTurns())
+                .created(ZonedDateTime.now())
                 .build();
     }
 

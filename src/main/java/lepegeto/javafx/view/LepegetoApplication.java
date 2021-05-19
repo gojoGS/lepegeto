@@ -17,15 +17,7 @@ import java.util.List;
  * A class that represents the JavaFX application.
  */
 public class LepegetoApplication extends Application {
-    private GuiceContext context = new GuiceContext(this, () -> List.of(
-            new AbstractModule() {
-                @Override
-                protected void configure() {
-                    install(new PersistenceModule("lepegeto"));
-                    bind(GameResultDao.class);
-                }
-            }
-    ));
+
 
     @Inject
     private FXMLLoader fxmlLoader;

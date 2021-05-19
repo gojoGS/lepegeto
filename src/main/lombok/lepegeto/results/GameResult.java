@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 /**
@@ -15,38 +14,24 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
+
 public class GameResult {
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
+    private String winner;
     /**
      * The name of the player.
      */
-    @Column(nullable = false)
     private String player1;
-    @Column(nullable = false)
     private String player2;
-    @Column(nullable = false)
-    private String winner;
 
     /**
      * The number of steps made by the player.
      */
-    @Column(nullable = false)
     private int steps;
 
     /**
      * The timestamp when the result was saved.
      */
-    @Column(nullable = false)
     private ZonedDateTime created;
-
-    @PrePersist
-    protected void onPersist() {
-        created = ZonedDateTime.now();
-    }
 
 }

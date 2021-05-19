@@ -49,9 +49,11 @@ public class GameState implements Cloneable {
     @XmlElement
     int numberOfTurns;
 
-    @XmlTransient
+    @XmlElementWrapper(name = "selected")
+    @XmlElement(name = "position")
     private ArrayList<Position> selected;
-    @XmlTransient
+    @XmlElementWrapper(name = "ghosts")
+    @XmlElement(name = "position")
     private ArrayList<Position> ghosts;
 
     public HashMap<Player, String> getPlayers() {

@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import lepegeto.results.GameResult;
 import lepegeto.results.GameResultDao;
+import lepegeto.results.ResultManager;
 import org.tinylog.Logger;
 
 import javax.inject.Inject;
@@ -58,7 +59,8 @@ public class EndingController {
     @FXML
     private void initialize() {
         Logger.debug("Loading high scores...");
-        List<GameResult> highScoreList = gameResultDao.findBest(10);
+        var manager = new ResultManager();
+        List<GameResult> highScoreList = manager.fetch();
 
         winner.setCellValueFactory(new PropertyValueFactory<>("winner"));
         player1.setCellValueFactory(new PropertyValueFactory<>("player1"));
