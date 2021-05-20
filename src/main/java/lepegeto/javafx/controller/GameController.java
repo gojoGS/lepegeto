@@ -47,9 +47,6 @@ public class GameController {
 
     private GameState gameState;
 
-    @Inject
-    private GameResultDao gameResultDao;
-
     /**
      * Initializes a game with a default state.
      */

@@ -34,9 +34,6 @@ public class EndingController {
     @FXML
     private TextField winnerTextField;
 
-    @Inject
-    private GameResultDao gameResultDao;
-
     @FXML
     private TableView<GameResult> highScoreTable;
 
